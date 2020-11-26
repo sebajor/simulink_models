@@ -1,0 +1,7 @@
+A simple feed-forward network in HDL. 
+Each module has a basic cocotb testbench to check functionality,
+but at this moment it doesnt have a rigorous verification.
+ie dont use it without testing! 
+
+By the way, I think that this could be easilly done in hls, but I wanted to
+make my own implementation in verilog :P

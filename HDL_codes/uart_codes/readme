@@ -1,0 +1,7 @@
+Codes taken from https://github.com/sebajor/go_board
+they are created and tested in the go board but could easilly transfer into
+the casper environment using the gpio interface (carefull they uses 1.5v so
+you need a voltage translator).
+
+
+To import them into a simulink model use the black box block.

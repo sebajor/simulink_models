@@ -16,3 +16,4 @@ calandigital'ed projects:
 - [x] Snapshots
 - [x] Spectrometers
 - [x] Tests
+
