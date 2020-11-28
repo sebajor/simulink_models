@@ -1,0 +1,6 @@
+This model has a basic implementation of the 1 Gbe basic implementation.
+
+The data is send in a UDP frame, so you have to create a udp socket in 
+the receiving computer.
+
+

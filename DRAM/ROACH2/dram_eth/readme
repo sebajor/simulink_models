@@ -1,0 +1,31 @@
+This model is a test for a ring buffer for 3 channels of the ADC 
+data.
+
+
+There are 3 counters running as dram input, this emulate the data
+comming from 3 ADC chanels. 
+For each value of the counter we keep 4 bits, so in each cycle we
+have 3*32 bits = 96 bits per cycle--> we need 3cycles to collect
+the 288 bits.
+
+So we first arm the 288 input for the dram.
+
+We read the dram in burst of 220 addresses which give us 7920bytes.
+Like the 1G_eth block input is 8 bits we use pipe the dram burst
+into a FIFO and read the fifo using a Parallel Input Serial Output
+(PISO) to slice the dram word into 1 byte words.
+
+Once we have introduced the 7920 bytes into the 1G_eth block we 
+generate the eof pulse, sending the message and enabling the read
+of the next 220 addresses of the dram.
+This process is repeated for n_pkt times.
+
+After some testing we arrive to the values of the parameters in init.py file
+When you run it the dram get written, then reading and send the data via 
+ethernet.
+To check if the data is consistent you could run the script test.py which 
+review if there is some missing data. If there is a failure review the
+parameters of the model.. the usual problem is the n_pkt and the 
+sleeping time between sends.
+
+
