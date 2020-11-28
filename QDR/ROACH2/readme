@@ -1,0 +1,7 @@
+In the ROACH2 we have 4 QDR available
+each QDR has 2**19 addresses of 72 bits
+
+Before using them you need to run a 
+calibration script which needs the 
+PowerPc interface.. so you have to
+enable it when compiling
