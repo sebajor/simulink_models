@@ -1,4 +1,4 @@
-module piso #(
+module piso_dram #(
     parameter INPUT_SIZE = 288,
     parameter OUTPUT_SIZE = 8
 )
