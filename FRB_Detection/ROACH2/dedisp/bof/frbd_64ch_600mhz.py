@@ -2,13 +2,17 @@ import calandigital as cd
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
-
+import time
 
 # communication parameters
-roach_ip = None
-boffile  = 'dss_2048ch_1520mhz.bof.gz'
+#roach_ip = '192.168.1.12'
+roach_ip = '192.168.1.14'
+boffile  = 'frbd_64ch_600mhz.bof.gz'
+#boffile  = None
 
 # model parameters
+
+gain = 2**18
 adc_bits  = 8
 bandwidth = 600.0 # MHz
 fcenter   = 1500 # MHz
@@ -30,8 +34,8 @@ bram_data_type  = '>u4'
 # experiment parameters
 k     = 4.16e6 # formula constant [MHz^2*pc^-1*cm^3*ms]
 DMs   = range(0, 550, 50)
-ylim  = (-10,100)
-theta = 60
+ylim  = (30,80)
+theta = 70
 
 # derivative parameters
 flow    = fcenter - bandwidth/2 # MHz
@@ -43,8 +47,8 @@ tspec   = Ts*nchnls # us
 
 def main():
     # initialize roach
-    roach = cd.initialize_roach(roach_ip, boffile=boffile)
-
+    roach = cd.initialize_roach(roach_ip, boffile=boffile, upload=1)
+    time.sleep(1)
     # create figures
     fig, lines = create_figure()
     
@@ -53,6 +57,8 @@ def main():
     accs = compute_accs()
     for acc, acc_reg in zip(accs, acc_regs):
         roach.write_int(acc_reg, acc)
+    roach.write_int('acc_len',1) #the debuging one
+    roach.write_int('gain',gain)
     print("Resseting counter registers.")
     roach.write_int(count_reg, 1)
     roach.write_int(count_reg, 0)

@@ -1,6 +1,6 @@
 #!/bin/bash
 plot_snapshots.py \
-    --ip         192.168.1.12 \
+    --ip         192.168.1.14 \
     `#--bof        detector_roach2_v2_2.bof.gz` \
     --upload      \
     --snapnames  adcsnap0 \
