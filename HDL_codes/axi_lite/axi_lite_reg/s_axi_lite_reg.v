@@ -136,7 +136,7 @@ assign valid_write_data = S_AXI_WVALID || !axi_wready;
 assign write_resp_stall = S_AXI_BVALID && !S_AXI_BREADY;
 
 
-//write ready signal
+//write addr ready signal
 always@(posedge S_AXI_ACLK)begin
     if(!S_AXI_ARESETn)
         axi_awready<= 1;
@@ -155,10 +155,10 @@ end
 //write data ready signal
 always@(posedge S_AXI_ACLK)begin
     if(!S_AXI_ARESETn)
-        axi_awready <= 1;
+        axi_wready <= 1;
     else if(write_resp_stall) begin
         //there is something in the buffer, we need to wait
-        axi_awready <= !valid_write_data;
+        axi_wready <= !valid_write_data;
     end
     else if(valid_write_addr)begin
         //the buffer is empty
@@ -211,11 +211,11 @@ always@(posedge S_AXI_ACLK)begin
         if(wstrb[0])
             slv_mem[DW*waddr[AW+ADDR_LSB-1:ADDR_LSB]+:8]<= wdata[7:0];
         if(wstrb[1])
-            slv_mem[DW*waddr[AW+ADDR_LSB-1:ADDR_LSB]+7+:8]<=wdata[15:8];
+            slv_mem[DW*waddr[AW+ADDR_LSB-1:ADDR_LSB]+8+:8]<=wdata[15:8];
         if(wstrb[2])
-            slv_mem[DW*waddr[AW+ADDR_LSB-1:ADDR_LSB]+15+:8]<=wdata[23:16];
+            slv_mem[DW*waddr[AW+ADDR_LSB-1:ADDR_LSB]+16+:8]<=wdata[23:16];
         if(wstrb[3])
-            slv_mem[DW*waddr[AW+ADDR_LSB-1:ADDR_LSB]+23+:8]<=wdata[31:24];
+            slv_mem[DW*waddr[AW+ADDR_LSB-1:ADDR_LSB]+24+:8]<=wdata[31:24];
     end
 end
 

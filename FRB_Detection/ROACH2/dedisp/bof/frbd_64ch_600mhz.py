@@ -34,7 +34,8 @@ bram_data_type  = '>u4'
 # experiment parameters
 k     = 4.16e6 # formula constant [MHz^2*pc^-1*cm^3*ms]
 DMs   = range(0, 550, 50)
-ylim  = (30,80)
+DMs[0] = 20
+ylim  = (65,75)#(30,80)
 theta = 70
 
 # derivative parameters
@@ -119,7 +120,7 @@ def compute_accs():
         accs.append(int(round(acc)))
     
     # adjust DM 0 to the next acc
-    accs[0] = accs[1]
+    #accs[0] = accs[1]
     print("Computed accumulations: " + str(accs))
     return accs
         

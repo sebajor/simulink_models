@@ -15,16 +15,16 @@ module pattern_search #(
     input wire clk,
     input wire rst,
     //uart input
-    input [N_BITS-1:0] char_in,
-    input char_valid,
+    input wire [N_BITS-1:0] char_in,
+    input wire char_valid,
     
     //if you want to modify the golden word
-    input [N_BITS-1:0] golden_word,
-    input golden_word_valid,
-    input [$clog2(PATTERN_SIZE)-1:0] golden_word_index,
+    input wire [N_BITS-1:0] golden_word,
+    input wire golden_word_valid,
+    input wire [$clog2(PATTERN_SIZE)-1:0] golden_word_index,
 
-    output [N_BITS-1:0] info_data,
-    output info_valid//,
+    output wire [N_BITS-1:0] info_data,
+    output wire info_valid//,
     //output reg [N_BITS-1:0] actual_gold
 );
 

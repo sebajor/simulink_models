@@ -1,0 +1,10 @@
+This model has a 8192 FFT compiled at 1080MHz.
+In parallel we subsample the FFT adding the channels (the power) 
+to have a 128 FFT.
+To do that we use a custom vector accumulator (the default one doesnt 
+have a enable port, suppose a continuum data stream).
+
+There are some restrictions in the vec_acc module, it doesnt handle 
+all the accumulation lengths (as ex acc_len=1 doesnt work)
+
+

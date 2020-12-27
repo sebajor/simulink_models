@@ -35,8 +35,15 @@ bram_data_type  = '>u4'
 # experiment parameters
 k     = 4.16e6 # formula constant [MHz^2*pc^-1*cm^3*ms]
 DMs   = range(0, 550, 50)
-ylim  = (50,90)
-theta = 80
+DMs[0] = 20
+#ylim  = (55,75)
+##thi valeues are measured....test only!!!
+ylims = [(60,65), (60,65), (65,70), (67,72), (68,73), (68,73), 
+        (70,75), (70, 75), (70,75), (70,75), (70, 75)]
+
+thetas = [63+2, 63+2, 66+2, 67+2, 69+2,70+2, 70.8+2,
+         71.4+2, 72.4+2, 72.4+2, 72.8+2, 73+2]
+
 
 # derivative parameters
 flow    = fcenter - bandwidth/2 # MHz
@@ -63,7 +70,7 @@ def main():
     
     print('writing theta (for testing only)!')
     for i in range(11):
-        roach.write_int('theta'+str(i), 10**(theta/10.))
+        roach.write_int('theta'+str(i), 10**(thetas[i]/10.))
     
 
 
@@ -114,10 +121,11 @@ def create_figure():
         if i in [0,3,6,9]:
             ax.set_ylabel('Power [dB]')
         ax.set_title("DM: " + str(dm))
-        ax.set_ylim(ylim)
+        print(i)
+        ax.set_ylim(ylims[i])
         ax.grid()
         line, = ax.plot([], [], animated=True)
-        ax.plot([0,2**bram_addr_width], [theta, theta])
+        ax.plot([0,2**bram_addr_width], [thetas[i], thetas[i]])
         lines.append(line)
 
     return fig, lines
