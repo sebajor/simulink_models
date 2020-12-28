@@ -4,6 +4,8 @@ from cocotb.triggers import ClockCycles
 from cocotb.binary import BinaryValue
 import numpy as np
 import struct
+import matplotlib.pyplot as plt
+
 
 def int2bin(in_data, bin_point):
     """in_data must be a list with the values!
@@ -43,6 +45,7 @@ def bin2int(in_data, bin_point):
 async def cic_test(dut):
     clock = Clock(dut.clk_in, 10, units='ns')
     cocotb.fork(clock.start())
+    dut.test_number <= 0;
     dut.rst <= 0;
     dut.din <= 0;
     await ClockCycles(dut.clk_in, 4)
@@ -53,12 +56,32 @@ async def cic_test(dut):
     for i in range(2**7):
         await ClockCycles(dut.clk_in, 1)
     ##test 2 step response, must be decimation**stages = 8^3=512=0x200
+    dut.test_number <= 1;
     dut.din <= 1;
     await ClockCycles(dut.clk_in, 2**7)
-
-
-
-
-
+    ##sinusoid input
+    d1 = BinaryValue()
+    k = 15          ## twiddle factor
+    t = np.arange(1024)
+    dat = np.sin(2*np.pi*t*k/1024.)
+    #dat_bin = struct.pack('>1024h', *((dat*(2**15-1)).astype(int)))
+    dut.rst <= 1;
+    dut.din <=0;
+    await ClockCycles(dut.clk_in, 24)
+    dut.rst <= 0;
+    dut.test_number <= 2
+    await ClockCycles(dut.clk_in, 4)
+    f = open('out', 'wb')
+    for i in range(2):
+        clk_dly =0
+        for j in range(1024):
+            if(bool(dut.clk_out.value)&(~bool(clk_dly))):
+                f.write(dut.dout.value.buff)
+            dat_bin = struct.pack('>h', (dat[j]*(2**15-1)).astype(int))
+            d1.set_buff(dat_bin)
+            dut.din <= d1
+            clk_dly = dut.clk_out.value
+            await ClockCycles(dut.clk_in, 1)
+    f.close()
 
 

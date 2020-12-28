@@ -33,7 +33,7 @@ for(m=0; m<STAGES;m=m+1)begin :int_loop
     end
 end
 
-assign dout = int_loop[STAGES-1].dout_r;
+assign dout = $signed(int_loop[STAGES-1].dout_r);
 endgenerate
 
 
