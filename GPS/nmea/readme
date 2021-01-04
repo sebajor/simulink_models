@@ -1,0 +1,27 @@
+This model uses some logic to program an ublox, then search for a 
+determined pattern in the messages that the gps is broadcasting.
+
+When the message with the time is received, we save the current time 
+in a second resolution. To have a subsec resoution we use the PPS 
+given by the gps.
+
+NMEA uses a uart like interface, so is easy to connect it.
+
+The model uses the roach2 gpios to make the work, be carefull the 
+gpios are 1.5V tolerant so you have to make some voltage translation also
+take care with the initialization process.
+
+    gpio0:  PPS
+    gpio1:  UART RX     (connect this with TX of the gps)
+    gpio2:  UART TX     (connect this with RX, is just to program
+                        the gps module if its needed.. now we only
+                        program a ublox, if you need to send another
+                        command put the hex in gold_hex.mem)
+
+
+
+Also I dont know why sysgen doesnt the parameters in the hdl modules
+so this example is compiled with CLK_FREQ = 100_000_000; but the best
+is change the parameter right into the top level (in this case gps_parser)
+and in the configuration file (gps_parse_config) if you need to use 
+another freq.

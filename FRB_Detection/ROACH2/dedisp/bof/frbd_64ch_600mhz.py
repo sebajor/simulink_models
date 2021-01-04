@@ -56,6 +56,8 @@ def main():
     # initial setting of registers
     print("Setting accumulation registers.")
     accs = compute_accs()
+    print(DMs)
+    print(accs)
     for acc, acc_reg in zip(accs, acc_regs):
         roach.write_int(acc_reg, acc)
     roach.write_int('acc_len',1) #the debuging one
