@@ -6,7 +6,7 @@ import time
 
 # communication parameters
 #roach_ip = '192.168.1.12'
-roach_ip = '192.168.1.14'
+roach_ip = '192.168.0.40'
 boffile  = 'frbd_64ch_600mhz.bof.gz'
 #boffile  = None
 

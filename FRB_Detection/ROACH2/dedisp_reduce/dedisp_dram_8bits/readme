@@ -1,0 +1,5 @@
+This model differ from the dedisp_dram that the dram saves the whole 
+adc samples without a requantization.. Just to check if the harmonics
+captired in the previous test are an artifact from the 4 bit quantization.
+
+ 

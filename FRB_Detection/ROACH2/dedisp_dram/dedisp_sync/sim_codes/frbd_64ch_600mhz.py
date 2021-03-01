@@ -44,7 +44,7 @@ fhigh   = fcenter + bandwidth/2 # MHz
 iffreqs = np.linspace(0, bandwidth, nchnls, endpoint=False)
 rffreqs = iffreqs + flow
 Ts      = 1/(2*bandwidth) # us
-tspec   = Ts*nchnls # us
+tspec   = Ts*nchnls # us    #creo que esta mal xq son 4 muestras en paralelo o no?
 
 def main():
     # initialize roach

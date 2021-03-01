@@ -6,9 +6,11 @@ from plot2 import plot_spect
 from frb_acc import plot_frb
 from geth_module import config_tge
 
-roach_ip ='192.168.0.40'#'192.168.1.14'
+roach_ip ='192.168.1.14'
 boffile = 'reduce_spect_tge.fpg'
-gain = 2**8
+gain = 180#2**8
+gain_adc = 2**17
+
 
 adc_bits = 8
 bw = 600.
@@ -111,7 +113,8 @@ print(accs)
 for acc, acc_reg in zip(accs, acc_regs):
     roach.write_int(acc_reg, acc)
 
-thetas = [61, 64, 66, 67]
+#thetas = [61, 64, 66, 67]
+thetas = [46, 48, 50, 52]
 for theta_reg, theta in zip(theta_list, thetas):
     roach.write_int(theta_reg, int(10**(theta/10.)))    ##fail mio, me falto un cast para
                                                         ##arreglar el pto que viene
@@ -139,7 +142,7 @@ time.sleep(1)
 config_tge(roach)
 
 
-roach.write_int('gain_adc', 2**18)
+roach.write_int('gain_adc', gain_adc)
 roach.write_int('gain', gain)
 roach.write_int('acc_len',acc_len)
 roach.write_int('cnt_rst',0)

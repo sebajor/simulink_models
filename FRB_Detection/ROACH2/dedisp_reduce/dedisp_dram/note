@@ -1,0 +1,10 @@
+This model has a 2048 FFT which gets reduced into a 64 FFT to match the
+dedispersor size width (considering memory usage and quantity of 
+dedispersors we arrive to that channel number).
+Also it has multiple scopes to see the status of the spectrum after all
+the re-quantization chain.
+
+The model also has the interface with the DRAM to save the raw data when 
+the dedispersor triggers a detection.
+
+

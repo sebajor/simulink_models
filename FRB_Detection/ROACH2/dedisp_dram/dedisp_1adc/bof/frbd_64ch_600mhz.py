@@ -41,8 +41,12 @@ DMs[0] = 20
 ylims = [(60,65), (60,65), (65,70), (67,72), (68,73), (68,73), 
         (70,75), (70, 75), (70,75), (70,75), (70, 75)]
 
-thetas = [63+2, 63+2, 66+2, 67+2, 69+2,70+2, 70.8+2,
-         71.4+2, 72.4+2, 72.4+2, 72.8+2, 73+2]
+#thetas = [63+2, 63+2, 66+2, 67+2, 69+2,70+2, 70.8+2,
+#         71.4+2, 72.4+2, 72.4+2, 72.8+2, 73+2]
+
+thetas = [63+8, 63+8, 66+8, 67+8, 69+8,70+8, 70.8+8,
+         71.4+8, 72.4+8, 72.4+8, 72.8+8, 73+8]
+
 
 
 # derivative parameters
@@ -98,9 +102,11 @@ def main():
 
     ani = FuncAnimation(fig, animate, blit=True)
     plt.show()
-    print("reading dram data")
-    roach.write_int('control', 0)
-    dram_ring.reading_dram()
+    resp = raw_input('Read dram?(y/n)')
+    if(resp=='y'):
+        print("reading dram data")
+        roach.write_int('control', 0)
+        dram_ring.reading_dram()
     dram_ring.close_socket()
 
 

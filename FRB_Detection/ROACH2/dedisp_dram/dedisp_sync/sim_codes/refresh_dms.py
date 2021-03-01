@@ -16,3 +16,4 @@ for i in range(len(accs)):
     print("DM=%i \t refresh rate: %.4f"%(dm[i], refresh_rate[i]))
 
 
+asd = lambda x,y: x*y/fclk*n_chann/parallel

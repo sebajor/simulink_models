@@ -1,0 +1,18 @@
+the acc counters are super unefficient.. to do multiplex some
+memories!
+
+
+To have a synchronized the accs display we use different sizes, they take
+~1sec to be filled with the current values
+chann0  --> 1024
+chann1  --> 1024
+chann2  --> 512
+chann3  --> 256
+chann4  --> 256
+chann5  --> 256
+chann6  --> 128
+chann7  --> 128
+chann8  --> 128
+chann9  --> 128
+chann10 --> 128
+

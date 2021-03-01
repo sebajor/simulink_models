@@ -51,7 +51,7 @@ def get_data():
     d0 = np.transpose(d0).flatten()
     d0 = 10*np.log10(d0+1)
     
-    red = np.array(struct.unpack('>64Q', fpga.read('small_spec1', 64*8)))
+    red = np.array(struct.unpack('>64Q', fpga.read('test', 64*8)))
     d1 = 10*np.log10(red+1)
     return [d0, d1]
 

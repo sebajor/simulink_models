@@ -12,12 +12,14 @@ start_symbol = 14*'\xaa\xbb\xcc\xdd'
 f = file('udp_data', 'rb')
 
 channels = 2048
-chunk = 8192*4*32
-frames_chunk = 27   ##frames per chunk, after some playing we arrive to 
+chunk = (2048*4*4+64)*33*8#8192*4*32
+frames_chunk = 33*8-1   ##frames per chunk, after some playing we arrive to 
                     ##this value
-iters = 32
+iters = 1
 spec0_mat = np.zeros([iters*frames_chunk, channels])
 spec1_mat = np.zeros([iters*frames_chunk, channels])
+
+f.seek(chunk*63)
 
 secs = []
 subsecs = []
@@ -60,4 +62,9 @@ t = np.arange(frames_chunk*iters)*t_log
 frec = np.linspace(1200, 1800, channels ,endpoint=False)
 plt.pcolormesh(t,frec, 10*np.log10(spec0_mat+1).T)
 plt.show()
+
+
+
+
+
 
