@@ -1,5 +1,5 @@
 module piso #(
-    parameter INPUT_SIZE = 512,
+    parameter INPUT_SIZE = 256,
     parameter OUTPUT_SIZE = 64
 )
 (
@@ -9,7 +9,7 @@ module piso #(
     //stupid matlab
     //input wire [INPUT_SIZE-1:0] i_parallel,
     //output wire [OUTPUT_SIZE-1:0] o_serial,
-    input wire [511:0] i_parallel,
+    input wire [255:0] i_parallel,
     output wire [63:0] o_serial,
 
     input wire      fifo_empty,
@@ -102,11 +102,7 @@ always@(posedge clk)begin
         1: serial_out = i_parallel[OUTPUT_SIZE-1:0];   
         2: serial_out = i_parallel[2*OUTPUT_SIZE-1:1*OUTPUT_SIZE];
         3: serial_out = i_parallel[3*OUTPUT_SIZE-1:2*OUTPUT_SIZE];
-        4: serial_out = i_parallel[4*OUTPUT_SIZE-1:3*OUTPUT_SIZE];
-        5: serial_out = i_parallel[5*OUTPUT_SIZE-1:4*OUTPUT_SIZE];
-        6: serial_out = i_parallel[6*OUTPUT_SIZE-1:5*OUTPUT_SIZE];
-        7: serial_out = i_parallel[7*OUTPUT_SIZE-1:6*OUTPUT_SIZE];
-        0: serial_out = i_parallel[8*OUTPUT_SIZE-1:7*OUTPUT_SIZE];
+        0: serial_out = i_parallel[4*OUTPUT_SIZE-1:3*OUTPUT_SIZE];
     endcase
 end
 

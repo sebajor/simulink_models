@@ -1,0 +1,40 @@
+This model has 4 spectrometer of 2048 channels with 600mhz of bw.
+We save the raw data of 3 ADCs and send the spectrums using the 10GBe
+interface.
+
+
+As receiver we use the x520-DA1 interface. As a driver we use the
+ixgbe module (I had some problems when installing it from the 
+intel page.. i think could be compatibility problems with the cable,
+but using the one that comes with in the apt works).
+
+Either way we need to modify some system parameter to be able to
+receive the data using the 10GBe.
+
+
+Commands:
+
+    sudo ip addr add 192.168.2.10/24 dev enp2s0     ##create interface
+    sudo ethtool -A enp2s0 tx off                   ##only if you want to receive
+    nc -lvu 192.168.2.10 60000                      #recv the data to see 
+                                                    ##if there is any transmition
+    sudo ip link set enp2s0 mtu 9000                #enable jumbo frames
+    sudo sysctl -w net.core.rmem_max=26214400       #increase the kernel buffers
+    sudo sysctl -w net.core.rmem_default=26214400   # idem
+    sudo ip link set up dev enp2s0                  #bring up the interface
+    
+    ##the next one is just to save the raw data.. prefeer the python script
+    #sudo tcpdump -B 32768 -s 0 -i enp2s0 udp -N --direction in -p -t -w data -U port 60000
+
+
+Searching, there are more commands to tweak the 10Gb...for ex 
+sometimes you have to set the ip tables for ex 
+here are some resources I found
+
+https://medium.com/@CameronSparr/increase-os-udp-buffers-to-improve-performance-51d167bb1360
+https://www.mail-archive.com/casper@lists.berkeley.edu/msg06874.htm
+https://www.mail-archive.com/casper@lists.berkeley.edu/msg01163.html
+https://blog.cloudflare.com/how-to-receive-a-million-packets/
+https://blog.cloudflare.com/how-to-achieve-low-latency/
+https://cromwell-intl.com/open-source/performance-tuning/ethernet.html
+

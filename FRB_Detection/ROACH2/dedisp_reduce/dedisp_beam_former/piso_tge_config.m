@@ -44,7 +44,7 @@ function piso_config(this_block)
 
     this_block.port('rst').useHDLVector(false);
 
-    if (this_block.port('i_parallel').width ~= 512);
+    if (this_block.port('i_parallel').width ~= 256);
       this_block.setError('Input data type for port "i_parallel" must have width=512.');
     end
 
@@ -71,7 +71,7 @@ function piso_config(this_block)
   %      on input types, make the settings in the "inputTypesKnown" code block.
   %      The addGeneric function takes  3 parameters, generic name, type and constant value.
   %      Supported types are boolean, real, integer and string.
-  this_block.addGeneric('INPUT_SIZE','integer','512');
+  this_block.addGeneric('INPUT_SIZE','integer','256');
   this_block.addGeneric('OUTPUT_SIZE','integer','64');
 
   % Add addtional source files as needed.

@@ -1,0 +1,43 @@
+
+
+The test moodel has the following package structure:
+0-64    : channel counter (0-1024)
+64-128  : 0
+128-192 : 1
+192-256 : 2
+
+256:320 : 3
+320:384 : 4
+384:448 : 5
+448-512 : 0xffeeddccbbaa9988
+
+
+Then it enters to a fifo and is read by the piso hdl in chunks of 256 and
+is concatenated with a 32 bit counter (the counter is the higher part)
+
+
+
+For simplicity we read everything as int, struct.unpack('18I') correspond to 
+one packet.  
+
+
+The return values are:
+0,0,
+0,0,
+1,0,
+2,0,
+11718656,
+
+3,0,
+4,0,
+5,0,
+3148519424,4293844428,
+11718657
+
+So we first note that the 9 bit is the counter added to the 256 sub word,
+also the ms and ls part of the long long is swapped
+
+Also the final value instead of being 0xbbaa9988 is 0xbbaa9800 checking the
+simulation thats the value of the constant (no idea why is truncating it)
+
+

@@ -1,0 +1,14 @@
+In this model we have a 4 spectrometers with 2048 channels with a 
+600 mhz of bandwidth.
+We concurrently save 3 channels of the ADC raw data in the dram. Following 
+the ideas in the dram_eth model, we use the 1Gbe block to send the 
+data outside the FPGA.
+
+
+note 1: like the PCs are used to handle byte sized words to work with a
+4-bit value we generate a C-code to speed the processing (python is 
+really slow...)
+
+note 2: to reutilize the dram ring buffer, you could copy the ring subsystem
+and use the dram_class.
+
