@@ -108,13 +108,13 @@ function gps_parser_config(this_block)
   %    this_block.addFile('');
   %    this_block.addFile('');
   %careful.. we use the absolute path to avoid troubles when compiling
-  this_block.addFile('/home/seba/Workspace/simulink_models/Ten_Gbe/spec_tge_4in_gps/hdl_codes/gold_hex.mem');
-  this_block.addFile('/home/seba/Workspace/simulink_models/Ten_Gbe/spec_tge_4in_gps/hdl_codes/gpszda.mem');
-  this_block.addFile('/home/seba/Workspace/simulink_models/Ten_Gbe/spec_tge_4in_gps/hdl_codes/uart_tx.v');
-  this_block.addFile('/home/seba/Workspace/simulink_models/Ten_Gbe/spec_tge_4in_gps/hdl_codes/uart_rx.v');
-  this_block.addFile('/home/seba/Workspace/simulink_models/Ten_Gbe/spec_tge_4in_gps/hdl_codes/pattern_search.v');
-  this_block.addFile('/home/seba/Workspace/simulink_models/Ten_Gbe/spec_tge_4in_gps/hdl_codes/send_msg.v');
-  this_block.addFile('/home/seba/Workspace/simulink_models/Ten_Gbe/spec_tge_4in_gps/hdl_codes/gps_parser.v');
+  this_block.addFile('/home/seba/Workspace/simulink_models/FRB_Detection/ROACH2/dedisp_reduce/dedisp_beam_former/hdl_codes/gold_hex.mem');
+  this_block.addFile('/home/seba/simulink_models/FRB_Detection/ROACH2/dedisp_reduce/dedisp_beam_former/hdl_codes/gpszda.mem');
+  this_block.addFile('/home/seba/simulink_models/FRB_Detection/ROACH2/dedisp_reduce/dedisp_beam_former/hdl_codes/uart_tx.v');
+  this_block.addFile('/home/seba/simulink_models/FRB_Detection/ROACH2/dedisp_reduce/dedisp_beam_former/hdl_codes/uart_rx.v');
+  this_block.addFile('/home/seba/simulink_models/FRB_Detection/ROACH2/dedisp_reduce/dedisp_beam_former/hdl_codes/pattern_search.v');
+  this_block.addFile('/home/seba/simulink_models/FRB_Detection/ROACH2/dedisp_reduce/dedisp_beam_former/hdl_codes/send_msg.v');
+  this_block.addFile('/home/seba/simulink_models/FRB_Detection/ROACH2/dedisp_reduce/dedisp_beam_former/hdl_codes/gps_parser.v');
 
 return;
 

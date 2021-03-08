@@ -2,9 +2,25 @@ import numpy as np
 import socket, struct, sys,time
 
 class dram_ring():
+    """ 
+        Class to control the dram ring buffer for the roach2 of the model
+        https://github.com/sebajor/simulink_models/tree/stable/DRAM/ROACH2/spectrometer_dram
+        
+        The fpga model cascade a dram with a 1Gb/s ethernet. This class enables
+        and disable the writing/reading of the dram and also handle the communication
+        between the fpga and the computer.
 
+    """
     def __init__(self, fpga, fpga_addr=('10.0.0.45',1234), sock_addr=('10.0.0.29', 1234), tx_core_name = 'one_GbE', n_pkt=10):
-        """sock address = (gbe ip address, port)
+        """
+            fpga:   corr or calandigital object
+            fpga_addr: ip_address, port
+            sock_ddres: ip_address, port of the computer 
+                        (of the interface connected to the roach)
+            tx_core_name: Name of the yellow block in the simulink design
+            n_pkt: number of packets you send in each burst, the packet length
+                    is 8192 so the computer expect 8192*n_pkt before send the 
+                    next burst.
         """
         self.fpga = fpga
         self.pkt_sock = 36*220
@@ -39,17 +55,26 @@ class dram_ring():
 
 
     def init_ring(self):
+        """
+        initialize the dram ring buffer, ie rst counters and stuffs
+        """
         self.fpga.write_int('ring_configuration',0)     
         self.fpga.write_int('ring_configuration',1)     ##start writing
         self.fpga.write_int('control1',1)    
 
 
     def reading_dram(self, filename='data'):
+        """ Reads the ring buffer starting from the address where it stops
+        writting.
+        For how it was implemented the pc will wait for the n_pkt*8192 bits
+        before allowing sending the next packet. This could hung the
+        communication if the parameters are not well suited.
+        """
         f = file(filename, 'wb')            ##CHANGE TO APPEND!!
         start = time.time()
         self.fpga.write_int('ring_configuration', 0b110000)
         self.fpga.write_int('ring_configuration', 0b010010) #read 1 burst of 220
-        for i in range(int(762*2000/self.n_pkt)):     ##why this number?
+        for i in range(int(762*205/self.n_pkt)):     ##why this number?
             data = ""
             for j in range(self.n_pkt+1):
                 data =data+self.sock.recv(self.pkt_sock)
@@ -66,8 +91,15 @@ class dram_ring():
         f.close()
     
     def open_sock(self, sock_addr=('10.0.0.29', 1234)): 
+        """ 
+        Open the socket that receives the data from the fpga
+        """
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.sock.bind(sock_addr)
 
     def close_socket(self):
+        """
+            Close the socket that receives the data from the fpga
+            You need to have the socket closed before opening again.
+        """
         self.sock.close()

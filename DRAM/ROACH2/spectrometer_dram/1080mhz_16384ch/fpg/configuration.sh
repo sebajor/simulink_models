@@ -1,3 +1,3 @@
-ROACH_IP="192.168.1.14"
+ROACH_IP="192.168.0.40"
 BOF_FILE="spect_dram_14_2.fpg"
-
+FFT_GAIN=32767
