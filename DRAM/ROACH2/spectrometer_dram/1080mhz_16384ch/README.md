@@ -89,3 +89,15 @@ you should see something like:
        valid_lft forever preferred_lft forever
 
 
+
+-If you are using only the switch to connect PC, PPC and the FPGA
+you need to set the address of the powerpc. To do that you need 
+to log into the powerpc using the usb port, in linux you could 
+use minicom in the /dev/ttyUSB2 and issue for ex (replace the 
+ip address and the netmask) :
+    ifconfig eth0 192.168.1.14 netmask 255.0.0.0
+
+
+
+
+

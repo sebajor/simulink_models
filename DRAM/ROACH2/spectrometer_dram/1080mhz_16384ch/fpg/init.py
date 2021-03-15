@@ -5,14 +5,18 @@ import calandigital as calan
 
 
 #roach parameters
-roach_ip = '192.168.0.40'
+roach_ip = '192.168.1.14'
 boffile = 'spect_dram_14_2.fpg'#'test.fpg'
 acc_len = 128
 
 
 ##ring buffer parameters
-sock_addr = ('10.0.0.29', 1234)
-
+#direct cable between fpga and pc
+sock_addr = ('10.0.0.29', 1234)    ##your pc address 
+fpga_addr = ('10.0.0.45', 1234)  
+#switch in the middle (remember with the switch yu need to set the ppc via minicom)
+#sock_addr = ('192.168.1.40', 1234)    
+#fpga_addr = ('192.168.1.3', 1234)
 
 #initialize roach and upload the boffile
 #roach = corr.katcp_wrapper.FpgaClient(roach_ip)
@@ -25,7 +29,7 @@ roach.write_int('fft_gain',2**15-1)
 roach.write_int('cnt_rst',1)
 
 print("Initializing DRAM")
-dram_ring = dram_class.dram_ring(roach, sock_addr=sock_addr, n_pkt=20)
+dram_ring = dram_class.dram_ring(roach, sock_addr=sock_addr,fpga_addr=fpga_addr, n_pkt=20)
 time.sleep(0.5)
 dram_ring.init_ring()
 
