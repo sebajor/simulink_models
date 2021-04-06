@@ -5,7 +5,7 @@ import calandigital as calan
 
 
 #roach parameters
-roach_ip = '192.168.1.14'
+roach_ip = '192.168.0.40'
 boffile = 'spect_dram_14_2.fpg'#'test.fpg'
 acc_len = 128
 

@@ -6,7 +6,7 @@ from plot2 import plot_spect
 from frb_acc import plot_frb
 from geth_module import config_tge
 
-roach_ip ='192.168.1.14'
+roach_ip ='192.168.0.40'
 boffile = 'reduce_spect_tge.fpg'
 gain = 180#2**8
 gain_adc = 2**17
