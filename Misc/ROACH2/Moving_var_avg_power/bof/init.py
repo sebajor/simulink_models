@@ -7,7 +7,7 @@ import calandigital as calan
 
 roach_ip = '192.168.0.40'
 boffile = 'avg_pow_spect.bof.gz'
-acc_len = 1024
+acc_len = 4096#1024
 dBFS = 6.02*8 + 10*np.log10(2**11)
 
 #model parameters
