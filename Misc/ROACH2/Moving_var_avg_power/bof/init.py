@@ -11,7 +11,7 @@ acc_len = 4096#1024
 dBFS = 6.02*8 + 10*np.log10(2**11)
 
 #model parameters
-y_lim = (0,100)
+y_lim = (260,320)
 bram_addr_width = 10
 bram_sw_pow = 'spect_pow'
 sw_pow_size = 64
@@ -84,7 +84,7 @@ def create_fig():
 
     ax2.set_xlim(0,2**bram_addr_width)
     ax2.grid()
-    ax2.set_ylim(-10,10)
+    ax2.set_ylim(-1,15)
     ax2.set_title('Var')
 
     line0, = ax0.plot([],[], animated=True)

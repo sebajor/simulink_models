@@ -1,0 +1,16 @@
+El primer test se hizo con una downconversion de 128 y un 4 stages
+eso se traduce en 50 dB entre el primer y segundo sidelobe que marca 
+el piso de ruido. El tamano de la FFT es de 1024
+
+
+Se usa como test una senal de 45MHz. Las primeras imagenes corresponden
+al dds funcionando a 20 MHz.
+
+Dps hacemos una downconversion de 44.5MHz.
+Por lo que se puede ver el piso de ruido esta en 70dB cuando no hay senal
+y el maximo valor que tomamos es 150dB---> approx 80dB de rango dinamico
+Lo otro es que el peak le aparecen varios sidelobes
+
+
+
+Probar otra fft y colocar el pfb

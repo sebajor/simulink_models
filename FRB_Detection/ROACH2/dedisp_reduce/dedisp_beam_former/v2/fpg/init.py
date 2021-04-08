@@ -104,7 +104,7 @@ def gps_read(fpga):
 
 roach = corr.katcp_wrapper.FpgaClient(roach_ip)
 try:
-    roach.upload_program_bof(boffile, 1000)
+    roach.upload_program_bof(boffile, 1000, timeout=10)
 except:
     print("programming roach raise an exception :(")
 #roach = calan.initialize_roach(roach_ip, boffile=boffile, upload=1)
