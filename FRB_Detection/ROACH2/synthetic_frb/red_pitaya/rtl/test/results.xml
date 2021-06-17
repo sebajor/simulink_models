@@ -1,0 +1,6 @@
+<testsuites name="results">
+  <testsuite name="all" package="all">
+    <property name="random_seed" value="1623267728" />
+    <testcase classname="addr_counter_test" file="/home/seba/Workspace/simulink_models/FRB_Detection/ROACH2/synthetic_frb/red_pitaya/rtl/test/addr_counter_test.py" lineno="7" name="addr_counter_test" ratio_time="39409.27316273153" sim_time_ns="30030.001" time="0.7620034217834473" />
+  </testsuite>
+</testsuites>

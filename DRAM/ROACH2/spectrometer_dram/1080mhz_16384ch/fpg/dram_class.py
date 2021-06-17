@@ -1,5 +1,6 @@
 import numpy as np
 import socket, struct, sys,time
+import ipdb
 
 class dram_ring():
     """ 
@@ -74,14 +75,17 @@ class dram_ring():
         start = time.time()
         self.fpga.write_int('ring_configuration', 0b110000)
         self.fpga.write_int('ring_configuration', 0b010010) #read 1 burst of 220
+        #ipdb.set_trace()
         for i in range(int(762*205/self.n_pkt)):     ##why this number?
             data = ""
             for j in range(self.n_pkt+1):
                 data =data+self.sock.recv(self.pkt_sock)
             f.write(data[:])
             print(str(i)+"\t "+str(len(data)))
-            if(i%50==1):
-                time.sleep(0.2)
+            #if(i%50==1):   #direct cable
+                #time.sleep(0.2)    #direct cable
+            if(i%10==1):   #switch
+                time.sleep(0.5)     #switch
             self.fpga.write_int('ring_configuration', 0b110000)
             self.fpga.write_int('ring_configuration', 0b010010) #read 1 burst of 220 
     #if(i%30==1):

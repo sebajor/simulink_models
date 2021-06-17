@@ -126,9 +126,9 @@ for theta_reg, theta in zip(theta_list, thetas):
 roach.write_int('cnt_rst',1)
 
 print("Initializing DRAM")
-dram_ring = dram_class.dram_ring(roach, sock_addr=sock_addr, n_pkt=20)
+#dram_ring = dram_class.dram_ring(roach, sock_addr=sock_addr, n_pkt=20)
 time.sleep(0.5)
-dram_ring.init_ring()
+#dram_ring.init_ring()
 roach.write_int('control1', 5)
 
 #tge parameters

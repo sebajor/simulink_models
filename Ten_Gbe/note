@@ -2,7 +2,7 @@ Some nics are tricky to use.. Typically computers are not set to
 10Gbe networks, so you need to make some tweaks.
 
 In the script init_tge.sh we set a interface in enp2s0 with an ip
-129.168.2.10  and make some adjustment in some linux options.
+192.168.2.10  and make some adjustment in some linux options.
 You need to have installed ethtool and obviously you need to have the
 right driver for your device. 
 

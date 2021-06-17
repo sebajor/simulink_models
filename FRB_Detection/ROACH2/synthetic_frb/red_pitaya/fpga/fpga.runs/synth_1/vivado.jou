@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Vivado v2019.1.1 (64-bit)
+# SW Build 2580384 on Sat Jun 29 08:04:45 MDT 2019
+# IP Build 2579722 on Sat Jun 29 11:35:40 MDT 2019
+# Start of session at: Fri Jun 11 12:15:59 2021
+# Process ID: 9777
+# Current directory: /home/seba/Workspace/simulink_models/FRB_Detection/ROACH2/synthetic_frb/red_pitaya/fpga/fpga.runs/synth_1
+# Command line: vivado -log fpga.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source fpga.tcl
+# Log file: /home/seba/Workspace/simulink_models/FRB_Detection/ROACH2/synthetic_frb/red_pitaya/fpga/fpga.runs/synth_1/fpga.vds
+# Journal file: /home/seba/Workspace/simulink_models/FRB_Detection/ROACH2/synthetic_frb/red_pitaya/fpga/fpga.runs/synth_1/vivado.jou
+#-----------------------------------------------------------
+source fpga.tcl -notrace

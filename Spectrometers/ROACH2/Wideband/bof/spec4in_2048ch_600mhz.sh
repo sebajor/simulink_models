@@ -1,6 +1,6 @@
 #!/bin/bash
 plot_spectra.py \
-    --ip        192.168.0.40       \
+    --ip        192.168.1.14       \
     --bof        spec4in_2048ch_600mhz.bof.gz\
     --upload     \
     --bramnames dout_0a_0 dout_0a_1 dout_0a_2 dout_0a_3 \
@@ -14,4 +14,4 @@ plot_spectra.py \
     --nbits     8 \
     --countreg  cnt_rst \
     --accreg    acc_len \
-    --acclen    $((1024))
+    --acclen    $((2048))

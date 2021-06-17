@@ -83,7 +83,7 @@ Misc:
     functions. Usually because we reduce the samples to a 4 bit representation
     which is not supported by the typical parser libraries. So we made
     a wrapper for that sort of function. 
-    As example, to comile the c code "testlib.c" to be used by the python
+    As example, to compile the c code "testlib.c" to be used by the python
     ctypes package you have to issue the command:
 
     gcc -shared -Wl,-soname,testlib -o testlib.so -fPIC testlib.c

@@ -64,7 +64,7 @@ function arcsin_config(this_block)
   this_block.addGeneric('OUT_INT','integer','8');
   this_block.addGeneric('IN_WIDTH','integer','13');
   this_block.addGeneric('IN_INT','integer','1');
-  this_block.addGeneric('FILENAME','string','"/home/franco/Diego/Doa_ordenado/arcsin_hex.mem"');
+  this_block.addGeneric('FILENAME','string','"/home/seba/Workspace/simulink_models/DoA/ROACH2/arte/hdl_codes/arcsin_hex.mem"');
 
   % Add addtional source files as needed.
   %  |-------------
@@ -79,8 +79,9 @@ function arcsin_config(this_block)
 
   %    this_block.addFile('');
   %    this_block.addFile('');
-  this_block.addFile('arcsin_hex.mem');
-  this_block.addFile('arcsin.v');
+  dir = '/home/seba/Workspace/simulink_models/DoA/ROACH2/arte/hdl_codes/';
+  this_block.addFile(strcat(dir,'arcsin_hex.mem'));
+  this_block.addFile(strcat(dir,'arcsin.v'));
 
 return;
 

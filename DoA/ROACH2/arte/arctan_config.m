@@ -64,7 +64,7 @@ function arctan_config(this_block)
   this_block.addGeneric('OUT_INT','integer','10');
   this_block.addGeneric('IN_WIDTH','integer','16');
   this_block.addGeneric('IN_INT','integer','16');
-  this_block.addGeneric('FILENAME','string','"/home/franco/Diego/Doa_ordenado/arctan_hex.mem"');
+  this_block.addGeneric('FILENAME','string','"/home/seba/Workspace/simulink_models/DoA/ROACH2/arte/hdl_codes/arctan_hex.mem"');
 
   % Add addtional source files as needed.
   %  |-------------
@@ -79,8 +79,9 @@ function arctan_config(this_block)
 
   %    this_block.addFile('');
   %    this_block.addFile('');
-  this_block.addFile('arctan_hex.mem');
-  this_block.addFile('arctan.v');
+  dir = '/home/seba/Workspace/simulink_models/DoA/ROACH2/arte/hdl_codes/';
+  this_block.addFile(strcat(dir,'arctan_hex.mem'));
+  this_block.addFile(strcat(dir,'arctan.v'));
 
 return;
 

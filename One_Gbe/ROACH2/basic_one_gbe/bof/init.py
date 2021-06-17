@@ -10,7 +10,7 @@ payload_len = 1024
 #connection settings
 pc_ip = '192.168.1.30'      #your computer eth dev
 dest_port = 1234
-ppc_ip = '192.168.0.40'     #roach ip
+ppc_ip = '192.168.1.14'     #roach ip
 fpga_ip = '192.168.1.45'    #fpga eth, you could put whatever you want
 
 #fpga mac
@@ -26,7 +26,7 @@ source_ip = int(fpga_eth[0])*(2**24)+int(fpga_eth[1])*(2**16)+int(fpga_eth[2])*(
 
 #program fpga
 print('programing fpga')
-fpga = corr.katcp_wrapper.FpgaClient('192.168.0.40')
+fpga = corr.katcp_wrapper.FpgaClient(ppc_ip)
 time.sleep(1)
 bof = 'one_gbe.bof.gz'
 fpga.upload_program_bof(bof,3000)

@@ -64,7 +64,7 @@ function sqrt_config(this_block)
   this_block.addGeneric('OUT_INT','integer','10');
   this_block.addGeneric('IN_WIDTH','integer','17');
   this_block.addGeneric('IN_INT','integer','17');
-  this_block.addGeneric('FILENAME','string','"/home/franco/Diego/Doa_ordenado/sqrt_hex.mem"');
+  this_block.addGeneric('FILENAME','string','"/home/seba/Workspace/simulink_models/DoA/ROACH2/arte/hdl_codes/sqrt_hex.mem"');
 
   % Add addtional source files as needed.
   %  |-------------
@@ -79,8 +79,9 @@ function sqrt_config(this_block)
 
   %    this_block.addFile('');
   %    this_block.addFile('');
-  this_block.addFile('sqrt_hex.mem');
-  this_block.addFile('sqrt.v');
+  dir = '/home/seba/Workspace/simulink_models/DoA/ROACH2/arte/hdl_codes';
+  this_block.addFile(strcat(dir,'sqrt_hex.mem'));
+  this_block.addFile(strcat(dir,'sqrt.v'));
 
 return;
 
