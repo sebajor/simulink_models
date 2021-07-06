@@ -4,7 +4,7 @@ import calandigital as calan
 import time
 
 roach_ip = '192.168.0.40'
-boffile = 'beam_rfi.bof.gz'
+boffile = 'beam_rfi2.bof.gz'
 acc = 1024
 gain = 2**9
 
