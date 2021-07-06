@@ -61,7 +61,7 @@ def compute_accs():
     return accs
 
 roach = corr.katcp_wrapper.FpgaClient(roach_ip)
-#roach.upload_program_bof(boffile, 3000, timeout=10)
+#roach.upload_program_bof(roach_ip, boffile, 3000, timeout=10)
 time.sleep(2)
 accs = compute_accs()
 print(DMs)

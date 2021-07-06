@@ -50,8 +50,16 @@ class dram_ring():
         fpga.write_int('control1',1)
         
         #configure the ring buffer
+        #configuration:
+        #   bit0:write
+        #   bit1:read
+        #   bit2:rst
+        #   bit3:rst read
+        #   bit4:load_en
+        #   bit5:rst_pkt_count
         fpga.write_int('ring_configuration', 0b101100) #rst everything
         fpga.write_int('ring_pkt_size', (pkt_size-2))
+        fpga.write_int('ring_extend', int(pkt_size/36*2))
         fpga.write_int('ring_n_pkt', self.n_pkt)
         fpga.write_int('ring_gbe_idle', idle)
 
@@ -77,23 +85,31 @@ class dram_ring():
         iters = int(iters)+1
         f = file(filename, 'wb')            ##CHANGE TO APPEND!!
         start = time.time()
-        self.fpga.write_int('ring_configuration', 0b110000)
-        self.fpga.write_int('ring_configuration', 0b010010) #read 1 burst of 220
+        self.fpga.write_int('ring_configuration', 0b100000)
+        self.fpga.write_int('ring_configuration', 0b000010) #read 1 burst of 220
         #ipdb.set_trace()
         ##we have 2**25*288/8 bytes of info
-
+        prev = 0
         for i in range(iters):#int(762*205/self.n_pkt)):     ##why this number?
             data = ""
             for j in range(self.n_pkt+1):
                 data =data+self.sock.recv(int(self.pkt_sock))
             f.write(data[:])
             print(str(i)+"\t "+str(len(data)))
+            curr_addr = self.fpga.read_int('ring_current_addr')
+            gold_lap = self.pkt_sock/18*(self.n_pkt+1)
+            lap = curr_addr-prev
+            if(gold_lap!=lap):
+                print(gold_lap)
+                print(lap)
+                break
+            prev = curr_addr
             if(i%50==1):   #direct cable
                 time.sleep(0.2)    #direct cable
             #if(i%10==1):   #switch
             #    time.sleep(0.5)     #switch
-            self.fpga.write_int('ring_configuration', 0b110000)
-            self.fpga.write_int('ring_configuration', 0b010010) #read 1 burst of 220 
+            self.fpga.write_int('ring_configuration', 0b100000)
+            self.fpga.write_int('ring_configuration', 0b000010) #read 1 burst of 220 
         end = time.time()
         print("took %.4f secs read dram" %(end-start))
         f.close()

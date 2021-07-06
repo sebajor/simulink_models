@@ -1,0 +1,5 @@
+#!/bin/bash
+python ranking.py \
+    --ip 192.168.0.40 \
+    --bof rfi_test.bof.gz \
+    --acc 1024 \

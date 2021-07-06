@@ -7,8 +7,14 @@ import calandigital as calan
 #roach parameters
 roach_ip ='10.0.0.5'#'192.168.1.14'
 boffile = 'spect_dram_14.fpg'#'test.fpg'
-acc_len = 256#128
+acc_len = 16384#1024#256#128
+clk_period = 1./(135.*10**6)
+tspect = acc_len*2**11*clk_period
+print("Time between spectras %.4f ms" %(tspect*10**3))
+print("Approx total time to save %.4f s" %(tspect*2**13))
 
+bram_names = ['dout0_0','dout0_1','dout0_2','dout0_3','dout0_4','dout0_5',
+                'dout0_6','dout0_7']
 
 ##ring buffer parameters
 #direct cable between fpga and pc
@@ -29,7 +35,8 @@ roach.write_int('fft_gain',2**11-1)
 roach.write_int('cnt_rst',1)
 
 print("Initializing DRAM")
-dram_ring = dram_class.dram_ring(roach, sock_addr=sock_addr,fpga_addr=fpga_addr, pkt_sock=36*110 ,n_pkt=10)#n_pkt=20)
+dram_ring = dram_class.dram_ring(roach, sock_addr=sock_addr,fpga_addr=fpga_addr, pkt_sock=36*110 ,n_pkt=5)#n_pkt=20)
+##pkt socket must be a multiple of 36!
 time.sleep(0.5)
 dram_ring.init_ring()
 
