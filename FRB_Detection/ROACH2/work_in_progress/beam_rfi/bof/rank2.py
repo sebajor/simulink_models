@@ -58,7 +58,7 @@ def animate(i):
     hw = calan.read_data(roach, 'rfi', 11, 16, '>h')/2.**13
     hw = hw.reshape(-1,4)[:,::-1].flatten()
     data[1].set_data(freq, sw)
-    data[0].set_data(freq, hw)
+    data[0].set_data(freq, np.abs(hw))
     return data
 
 if __name__ == '__main__':
