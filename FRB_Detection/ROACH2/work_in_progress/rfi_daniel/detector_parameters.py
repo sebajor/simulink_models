@@ -4,7 +4,7 @@
 import numpy as np
 
 # communication parameters
-roach_ip = '192.168.0.40'
+roach_ip = '192.168.1.14'
 boffile = 'rfidet_div.bof.gz'
 
 # model parameters
@@ -33,7 +33,7 @@ score_names = [['dout_num_0', 'dout_num_1', 'dout_num_2', 'dout_num_3'],        
 
 # experiment parameters
 acc_len = 2 ** 12
-detector_gain = 33
+detector_gain = 37
 pwr_sliced_bits = 45
 
 # derivative parameters

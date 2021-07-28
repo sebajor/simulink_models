@@ -55,7 +55,7 @@ def animate(i):
     corr_vals = calan.read_interleave_data(roach, corr_bram, 9, 32, '>u4')
     spec = calan.read_interleave_data(roach, spec_bram, 9, 32, '>u4')
     sw = (corr_vals)/spec+1 ##+1to avoid not def
-    hw = calan.read_data(roach, 'rfi', 11, 16, '>h')/2.**13
+    hw = calan.read_data(roach, 'rfi', 11, 16, '>h')/2.**12
     hw = hw.reshape(-1,4)[:,::-1].flatten()
     data[1].set_data(freq, sw)
     data[0].set_data(freq, np.abs(hw))

@@ -16,7 +16,7 @@ parser.add_argument("-u", "--upload", dest="upload", action="store_true",
     help="If used, upload .bof from PC memory (ROACH2 only).")
 parser.add_argument("-a", "--acc", dest="acc", help="accumulation value")
 
-def plot_corrs(_fpga, _acc, _freq=[0, 600]):
+def plot_corrs(_fpga, _acc, _freq=[1200, 1800]):
     global fpga, data, freq, dBFS, acc
     dBFS = 8*6.02+10*np.log10(2048)
     acc = _acc

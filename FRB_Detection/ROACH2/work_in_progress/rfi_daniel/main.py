@@ -178,6 +178,15 @@ def run(i):
                                         score_data_type) * 2 ** -30
     scoredata = np.delete(scoredata, len(specdata1) / 2)
 
+    # Save data
+    #config = 'data/cfg1_'
+    #filenames = ['specdata1.txt', 'specdata2.txt', 'specdata_sl1.txt', 'specdata_sl2.txt', 'numdata.txt', 'denomdata.txt', 'scoredata.txt', 'timedata.txt']
+    #data_array = [specdata1, specdata2, specdata_sl1, specdata_sl2, numdata, denomdata, scoredata, time.time()]
+    #for filename, data in zip(filenames, data_array):
+    #    f = open(config+filename, 'ab')
+    #    np.savetxt(f, [data])
+    #    f.close()
+
     # Normalize data by acc_len and convert to dBFS
     specdata1db = cd.scale_and_dBFS_specdata(specdata1, acc_len, dBFS)
     specdata2db = cd.scale_and_dBFS_specdata(specdata2, acc_len, dBFS)
@@ -228,4 +237,4 @@ def run(i):
 
 time_start = time.time()
 ani = animation.FuncAnimation(fig, run, interval=10, init_func=init)
-root.mainloop()
+root.mainloop() 

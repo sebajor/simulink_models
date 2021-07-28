@@ -2,11 +2,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 import calandigital as calan
 import time
+from get_specs import get_specs
 
 roach_ip = '192.168.0.40'
 boffile = 'beam_rfi.bof.gz'
 acc = 1024
-gain = 2**9
+gain = 2**9 
+# acclne=1024, with max recv (with 20db att) 32 works good
+
 
 roach = calan.initialize_roach(roach_ip, boffile=boffile, upload=1)
 time.sleep(1)

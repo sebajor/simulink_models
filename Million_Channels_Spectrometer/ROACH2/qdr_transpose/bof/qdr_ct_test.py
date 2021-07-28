@@ -7,8 +7,10 @@ import calandigital as cd
 
 def main():
     # initialize
-    fpga = cd.initialize_roach('192.168.0.40', boffile='qdr_ct_test.bof.gz', upload=True)
-        
+    boffile = 'qdr_ct_test.bof.gz'
+    roach_ip = '192.168.0.40'
+    fpga = cd.initialize_roach(roach_ip, boffile=boffile, upload=True)
+
     # calibrate qdr
     time.sleep(0.5)
     fpga.write_int('qdr_en',2)

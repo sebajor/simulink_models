@@ -1,5 +1,7 @@
 #!/bin/bash
+source configuration.sh
+
 python rank2.py \
-    --ip 192.168.0.40 \
-    --bof beam_rfi.bof.gz \
+    --ip $(echo $ROACH_IP) \
+    --bof $(echo $BOF_FILE) \
     --acc 1024 \
