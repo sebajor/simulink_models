@@ -1,0 +1,5 @@
+#ROACH_IP="192.168.1.14"
+ROACH_IP="10.17.89.168"
+BOF_FILE="arte_preliminar2.fpg"
+RFI_ACC=1024
+
