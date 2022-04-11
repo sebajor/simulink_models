@@ -7,8 +7,4 @@
 *.pdf
 *.png
 *.npz
-*/ROACH1/*/
-*/ROACH2/*/
-!*/ROACH1/bof/
-!*/ROACH2/bof/
 *calibrations*
