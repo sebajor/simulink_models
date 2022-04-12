@@ -1,4 +1,4 @@
-#Miscellaneus
+# Miscellaneous
 - GPS
     - [x] IRIG-B0XX 
     - [x] NMEA
@@ -7,3 +7,7 @@
 - [ ] Moving Average and Moving Variance.
 - [ ] ADC calibration/synchronization.
 - [ ] Scripted simulation.
+- PowerPC codes
+    -[ ] Remote Power cycling
+    -[x] Sensors reading
+    -[ ] C codes cross-compilation
