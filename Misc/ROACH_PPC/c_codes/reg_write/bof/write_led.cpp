@@ -4,7 +4,8 @@
 #include <fcntl.h>      //for the alias O_RDRW
 #include <unistd.h>     //to have sleep
 
-/*  This code just write the led value and then writes into the "in" registers
+/*  Author: Sebastian Jorquera
+ *  This code just write the led value and then writes into the "in" registers
  *  and reads the "out" register.
  *  The only caveat is that you should progam the fpga before running this script
  *  :P
@@ -51,9 +52,9 @@ int main(int argc, char* argv[]){
 
     //write read from the other registers
     printf("Writing to the input %i \n", (atoi(argv[1])+1));
-    led[0] = atoi(argv[1])+1;   //i know before hand that the offset is 0
+    led[0] = atoi(argv[1])+1;   //i know before hand that the offset is 0 to write the in register
     sleep(0.1);
-    printf("Read value from out: %i \n", led[129]);
+    printf("Read value from out: %i \n", led[129]);  //also I know that the 129 is the out register
 
     
 
