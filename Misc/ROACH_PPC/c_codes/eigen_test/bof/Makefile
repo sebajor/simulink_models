@@ -1,4 +1,4 @@
-TOP = eigen_test
+TOP ?= eigen_test
 CXX = powerpc-linux-gnu-g++
 USR_INC = ?
 USR_LIB = ?

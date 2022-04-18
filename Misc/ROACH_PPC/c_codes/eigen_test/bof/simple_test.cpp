@@ -5,7 +5,11 @@
 #include <time.h>           //to measure time
 #include <unistd.h>         //to have the sleep function
 #include <stdint.h>         //to have the different types of int
+#include <cmath>           //to shift float values
 
+/*
+ *  Author: Sebastian Jorquera
+ */
 
 #define MATRIX_SIZE     16
 #define DONE_ADDR       0x01000000
@@ -17,8 +21,6 @@
 
 #define SEED_VALUE      10
 #define PAGE_SIZE       4096
-
-
 
 void mmap_addr_calc(int addr, int page_size, int* out){
     int base_addr = (addr/page_size)*page_size;
@@ -37,59 +39,42 @@ void eigen_solver(int16_t* bram, float* w, float* z){
     for(int i=0; i<(MATRIX_SIZE*(MATRIX_SIZE+1)/2); i++){
         aux =  ((float)(bram[i]));
         data[i] = aux/32768.;
+        //printf("data %i: %.5f\t %.5f \t %i \n", i, data[i], aux, bram[i]);
     }
     int info = LAPACKE_sspev(LAPACK_ROW_MAJOR, jobz, uplo, MATRIX_SIZE,
                              data, w, z, MATRIX_SIZE);
 }
-
 
 void print_eigen_solution(float* w, float* z){
     printf("Eigenvalues\n");
     for(int i=0; i<MATRIX_SIZE; i++){
         printf("%.4f \n", w[i]);
     }
+/*
     printf("Eigen vectors\n");
     for(int i=0; i<MATRIX_SIZE; i++){
-        for(int j=0; j<MATRIX_SIZE; j++){
+        for(int j=0; i<MATRIX_SIZE; j++){
             printf("%.4f ", z[i*MATRIX_SIZE+j]);
         }
         printf("\n");
     }
+*/
 }
 
-
 int main(int argc, char* argv[]){
-    if(argc < 2){
-        printf("You have to enter the number of iterations \n");
-    }
     int fpga_fd = open("/dev/roach/mem", O_RDWR);
-
     if(fpga_fd == 0){
         printf("Error opening the roach mem file \n");
         return 1;
     }
     printf("Roach mem file opened\n");
-    
     //configure the system
     int prot = (PROT_READ | PROT_WRITE);
     int flags = MAP_SHARED;
     size_t length = 4096;
     int addr[2] = {0,0};
 
-    mmap_addr_calc(EN_ADDR, PAGE_SIZE, addr);
-    printf("en addr: %i offset: %i \n", addr[0], addr[1]); 
-    int *reg = static_cast<int*>(mmap(NULL, length, prot,flags, fpga_fd, addr[0]));
-    printf("Memory mapped the configuration register\n");
 
-    //now like the index measure 4byte words we jump the right amount
-    reg[0]  = 0;                            //en
-    reg[64] = MATRIX_SIZE*(MATRIX_SIZE+1)/2;//read_size
-    reg[128]= 1;                            //rst
-    reg[192]= SEED_VALUE;                   //seed
-    sleep(1);
-    reg[128] = 0;                           //unreset
-
-    printf("configuration done!\n");  
     mmap_addr_calc(DONE_ADDR, PAGE_SIZE, addr);
     int *done = static_cast<int*>(mmap(NULL, length, prot,flags, fpga_fd, addr[0]));
     printf("Memory mapped the done signal\n");
@@ -104,30 +89,14 @@ int main(int argc, char* argv[]){
 
     clock_t start, end;
     float cpu_time=0;
-    int count =0;
-    FILE *fptr;
-    
-    fptr = fopen("out_file.txt", "w");
 
-    reg[0] = 1;             //enable 
-    while(count < atoi(argv[1])){
-        if(done[1]){
-            start = clock();
-            eigen_solver(bram,w,z);
-            end = clock();
-            cpu_time =  1000*((double)(end-start))/CLOCKS_PER_SEC;
-            printf("iter took %.3f ms\n", cpu_time); 
-            count ++;
-            reg[128] = 1;
-            sleep(1);
-            reg[128]=0; 
-            print_eigen_solution(w,z);
-            fprintf(fptr, "%f; \n", cpu_time);
-        }
-    }
-    fclose(fptr);
-    munmap(reg, length);
-    munmap(bram, length);
-    munmap(done, length);
+    printf("done signal: %i \n", done[0]);
+    start = clock();
+    eigen_solver(bram,w,z);
+    end = clock();
+    cpu_time =  1000*((double)(end-start))/CLOCKS_PER_SEC;
+    printf("iter took %.3f ms\n", cpu_time); 
+    print_eigen_solution(w,z);
+    printf("Finish\n");
     return 1;
 }
