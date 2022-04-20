@@ -53,24 +53,26 @@ class roach_control():
         data = clear_bit(curr_state, 1)
         self.roach.write_int('control_control', data)
 
-    def reset_tge(self):
+
+    def reset_10gbe(self):
         """reset the 10Gbe module
-        """
-        curr_state = self.roach.read_int('control_control')
-        data = set_bit(curr_state, 3)
-        self.roach.write_int('control_control', data)
-        time.sleep(0.2)
-        data = clear_bit(curr_state, 1)
-        self.roach.write_int('control_control', data)
-    
-    def enable_tge(self):
-        """Enable the 10Gbe transmition
         """
         curr_state = self.roach.read_int('control_control')
         data = set_bit(curr_state, 4)
         self.roach.write_int('control_control', data)
+        time.sleep(0.2)
+        data = clear_bit(curr_state, 4)
+        self.roach.write_int('control_control', data)
 
-    
+
+    def enable_10gbe(self):
+        """Enable the 10Gbe transmition
+        """
+        curr_state = self.roach.read_int('control_control')
+        data = set_bit(curr_state, 3)
+        self.roach.write_int('control_control', data)
+
+
     def flag_channels(self, flags, n_chan=2048, n_streams=4):
         """ 
             flags:      array with the channels to flag
@@ -175,16 +177,23 @@ class roach_control():
             self.roach.write_int('control_theta', data)
 
 
-    def initialize_10gbe(self):
-        """Initialize the 10Gbe 
-        TODO!
+    def initialize_10gbe(self, integ_time=10**-2):
         """
+            Initialize the 10Gbe 
+            integ_time  :integration time between two frames, in seconds
+        """
+        tx_core='ten_Gbe_v2'
+        source=([192,168,2,3], 1234)
+        dest=([192,168,2,10], 1234)
         dest_ip = (dest[0][0]*(2**24)+dest[0][1]*(2**16)+dest[0][2]*(2**8)+dest[0][3])
         source_ip = (source[0][0]*(2**24)+source[0][1]*(2**16)+source[0][2]*(2**8)+source[0][3])
         port = source[1]
         mac_base = (2<<40)+(2<<32)
         nchnls  = 2048/4   ##number of channels/parallel streams
-        acc = int(round(refresh/nchnls*fpga_clk))
+        fpga_clk = 150.*10**6
+        acc = int(round(integ_time/nchnls*fpga_clk))
+        self.set_accumulation(acc, 0)
+        self.roach.tap_start('tx_tap',tx_core,mac_base+source_ip,source_ip,port)
         
     def reset_dedispersor(self):
         curr_state = self.roach.read_int('control_control')

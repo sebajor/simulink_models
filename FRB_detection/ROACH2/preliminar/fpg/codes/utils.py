@@ -1,5 +1,6 @@
 import calandigital as calan
 import numpy as np
+import os
 
 ##some bitwise operations
 
@@ -82,6 +83,54 @@ def get_dedispersed_mov_avg(roach, index):
     data = calan.read_data(roach, 'avg'+str(index), awidth=10, dwidth=32, dtype='>I')
     return data
 
+
+#class to read the 10gbe data
+#class to read the 10gbe data
+
+class read_10gbe_data():
+    """Class to read the data comming from the 10Gbe
+    """
+    def __init__(self, filename):
+        """ Filename: name of the file to read from
+        """
+        self.f = open(filename, 'rb')
+        ind = self.find_first_header()
+        self.f.seek(ind*4)
+        size = os.path.getsize(filename)
+        self.n_spect = (size-ind*4)//(2052*4)
+
+
+    def find_first_header(self):
+        """ Find the first header in the file bacause after the header is the first
+        FFT channel.
+        """
+        data = np.frombuffer(self.f.read(2052*4), '>I')
+        ind = np.where(data==0xaabbccdd)[0][0]
+        return ind
+
+    def get_spectra(self, number):
+        """
+        number  :   requested number of spectrums
+        You have to be aware that you have enough data to read in the n_spect
+        """
+        spect = np.frombuffer(self.f.read(2052*4*number), '>I')
+        spect = spect.reshape([-1, 2052])
+        self.n_spect -= number
+        return spect[:,4:]
+
+    def get_complete(self):
+        """
+        read the complete data, be carefull on the sizes of your file
+        """
+        data = self.get_spectra(self.n_spect)
+        return data
+
+    def close_file(self):
+        self.f.close()
+
+
+
+
 ###debug functions
 def get_resample_beam(roach, dwidth=32, dtype='>I'):
     data = calan.read_data(roach, 'debug', awidth=6,dwidth=dwidth, dtype=dtype)
@@ -101,4 +150,5 @@ def get_rfi_score(roach):
     score = calan.read_data(roach, bram_name, 9, 64, '>h')
     score /= 2.**13
     return score
+
  
