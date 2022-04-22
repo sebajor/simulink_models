@@ -16,6 +16,8 @@ roach_control = control.roach_control(roach)
 
 roach_control.set_accumulation(1024)                    #10bgbe accumulation
 roach_control.set_accumulation(1024, thresh=0, num=1)   #dedispersor
+roach_control.initialize_10gbe()
+roach_control.enable_10gbe()
 
 
 roach_control.reset_accumulators()

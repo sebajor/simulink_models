@@ -73,6 +73,35 @@ class roach_control():
         self.roach.write_int('control_control', data)
 
 
+    def flag_frequencies(self, frequencies ,near=None, channels=2048, bw_edges=[1200,1800]):
+        """
+            frequencies : list of frequencies to flag in Mhz
+            near        : if is not None and one frequency falls in the middle of
+                          two channels then we flag both. Otherwise only flags the
+                          nearest one
+            channels    : number of channels of the spectrum
+            bw_edges    : the start and end frequencies in the bw (in Mhz)
+        """
+        print(frequencies)
+        flags = []
+        bw = float(bw_edges[1]-bw_edges[0])
+        for freq in frequencies:
+            channel = ((freq-bw_edges[0])/bw)*channels
+            if(near is not None):
+                #TODO
+                if(channel ==0.0):
+                    flags.append(int(round(channel)))
+                    flags.append(int(round(channel)+1))
+                else:
+                    flags.append(int(round(channel)))
+                    flags.append(int(round(channel+1)))
+                    flags.append(int(round(channel-1)))
+            else:
+                flags.append(int(round(channel)))
+        self.flag_channels(flags, n_chan=channels, n_streams=4)
+        return 1
+
+    
     def flag_channels(self, flags, n_chan=2048, n_streams=4):
         """ 
             flags:      array with the channels to flag
@@ -95,7 +124,6 @@ class roach_control():
             val = vals[ind[i]]+(ind[i]*2**4)
             self.roach.write_int('control_rfi_flag',val+2**31)
         self.roach.write_int('control_rfi_flag',0)
-
     ##snapshots and sync the adcs
 
     def set_snap_trigger(self):
