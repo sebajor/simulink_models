@@ -15,7 +15,18 @@ function quad_eigen_iterative_config(this_block)
 
   % System Generator has to assume that your entity  has a combinational feed through; 
   %   if it  doesn't, then comment out the following line:
-  this_block.tagAsCombinational;
+  %this_block.tagAsCombinational;
+  
+  myname = this_block.blockName; %This is the name of the black box block
+  bb_mask = get_param(myname,'Parent'); %This is the name of the black box subsystem
+  din_width = str2num(get_param(bb_mask, 'din_width'));
+  din_point = str2num(get_param(bb_mask, 'din_point'));
+  sqrt_width = str2num(get_param(bb_mask, 'sqrt_width'));
+  sqrt_point = str2num(get_param(bb_mask, 'sqrt_point'));
+  dout_width = str2num(get_param(bb_mask, 'dout_width'));
+  dout_point = str2num(get_param(bb_mask, 'dout_point'));
+  bands = str2num(get_param(bb_mask, 'bands'));
+  fifo_depth = str2num(get_param(bb_mask, 'fifo_depth'));
 
   this_block.addSimulinkInport('r11');
   this_block.addSimulinkInport('r22');
@@ -43,6 +54,22 @@ function quad_eigen_iterative_config(this_block)
   fifo_full_port.setType('UFix_1_0');
   fifo_full_port.useHDLVector(false);
 
+  l1_port = this_block.port('lamb1');
+  l1_port.setType(strcat('UFix_', int2str(dout_width), '_0'));
+  l2_port = this_block.port('lamb2');
+  l2_port.setType(strcat('UFix_', int2str(dout_width), '_0'));
+  
+  eig1_port = this_block.port('eigen1_y');
+  eig1_port.setType(strcat('UFix_', int2str(dout_width), '_0'));
+  eig2_port = this_block.port('eigen2_y');
+  eig2_port.setType(strcat('UFix_', int2str(dout_width), '_0'));
+  eigx_port = this_block.port('eigen_x');
+  eigx_port.setType(strcat('UFix_', int2str(dout_width), '_0'));
+  
+  bandout_port = this_block.port('band_out');
+  bandout_port.setType(strcat('UFix_', int2str(ceil(log2(bands))),'_0'));
+  
+  
   % -----------------------------
   if (this_block.inputTypesKnown)
     % do input type checking, dynamic output type and generic setup in this code block.
@@ -90,15 +117,15 @@ function quad_eigen_iterative_config(this_block)
   %      on input types, make the settings in the "inputTypesKnown" code block.
   %      The addGeneric function takes  3 parameters, generic name, type and constant value.
   %      Supported types are boolean, real, integer and string.
-  this_block.addGeneric('DIN_WIDTH','integer','16');
-  this_block.addGeneric('DIN_POINT','integer','15');
-  this_block.addGeneric('SQRT_WIDTH','integer','16');
-  this_block.addGeneric('SQRT_POINT','integer','8');
-  this_block.addGeneric('DOUT_WIDTH','integer','16');
-  this_block.addGeneric('DOUT_POINT','integer','13');
-  this_block.addGeneric('BANDS','integer','4');
-  this_block.addGeneric('FIFO_DEPTH','integer','8');
-  this_block.addGeneric('CLOG_BANDS','integer','3');
+  this_block.addGeneric('DIN_WIDTH','integer',int2str(din_width));
+  this_block.addGeneric('DIN_POINT','integer',int2str(din_point));
+  this_block.addGeneric('SQRT_WIDTH','integer',int2str(sqrt_width));
+  this_block.addGeneric('SQRT_POINT','integer',int2str(sqrt_point));
+  this_block.addGeneric('DOUT_WIDTH','integer',int2str(dout_width));
+  this_block.addGeneric('DOUT_POINT','integer',int2str(dout_point));
+  this_block.addGeneric('BANDS','integer',int2str(bands));
+  this_block.addGeneric('FIFO_DEPTH','integer',int2str(fifo_depth));
+  this_block.addGeneric('CLOG_BANDS','integer',int2str(ceil(log2(bands))));
 
   % Add addtional source files as needed.
   %  |-------------
