@@ -1,9 +1,13 @@
 import calandigital as calan
 import numpy as np
 import scipy.stats
-import control, utils, time, argparse, pyvisa, corr
+import time, argparse, pyvisa, corr
+import matplotlib.pyplot as plt
 
 
+###
+### Author: Sebastian Jorquera
+###
 
 parser = argparse.ArgumentParser(
     description="Synchronize 2 ADC5G ADCs in ROACH2.")
@@ -79,18 +83,32 @@ def relative_phase(data0, data1, freq, fs=1200, dft_len=2048):
 
 
 
-def sync_iter(roach, gen_source,curr_delay, freqs, bandwidth, snap_names):
-   phases01 = np.zeros(len(freqs))
-   phases02 = np.zeros(len(freqs))
-   phases03 = np.zeros(len(freqs))
-
+def sync_iter(roach, gen_source,curr_delay, freqs, bandwidth, snap_names, 
+        spectra_data, phases_data, fig):
+    phases01 = np.zeros(len(freqs))
+    phases02 = np.zeros(len(freqs))
+    phases03 = np.zeros(len(freqs))
+    gen_source.write('outp on')
+    freq_plot = np.linspace(0, bandwidth, 1024, endpoint=0)
     for i in range(len(freqs)):
-        gen_source.write('freq '+str(freq[i])+' mhz')
-        adc0,adc1,adc2,adc3 = get_sync_snapshots(roach, snap_names)
-        phases01[i] = relative_phase(adc0,adc1,freq=freqs[i])
-        phases02[i] = relative_phase(adc0,adc2,freq=freqs[i])
-        phases03[i] = relative_phase(adc0,adc3,freq=freqs[i])
-    gen_source.query('outp off, *opc?')
+        gen_source.write('freq '+str(freqs[i])+' mhz')
+        adcs = get_sync_snapshots(roach, snap_names)
+        ###plot spectrums
+        for j in range(4):
+            spectra = np.fft.fft(adcs[j])
+            spectra = 20*np.log10(np.abs(spectra[:1024]))
+            spectra_data[j].set_data(freq_plot, spectra)
+        phases01[i] = relative_phase(adcs[0],adcs[1],freq=freqs[i])
+        phases02[i] = relative_phase(adcs[0],adcs[2],freq=freqs[i])
+        phases03[i] = relative_phase(adcs[0],adcs[3],freq=freqs[i])
+        #plot phases
+        phases_data[1].set_data(freqs, np.rad2deg(phases01))
+        phases_data[2].set_data(freqs, np.rad2deg(phases02))
+        phases_data[3].set_data(freqs, np.rad2deg(phases03))
+        #update plots
+        fig.canvas.draw()
+        fig.canvas.flush_events()
+    gen_source.write('outp off')
 
     delay1 = compute_adc_delay(freqs, phases01, bandwidth)
     delay2 = compute_adc_delay(freqs, phases02, bandwidth)
@@ -98,11 +116,14 @@ def sync_iter(roach, gen_source,curr_delay, freqs, bandwidth, snap_names):
     dels = np.array([delay1,delay2,delay3])
     adc0_delay =0; adc1_delay =0; adc2_delay=0; adc3_delay=0;
 
+    print("delay1:%i \t delay2:%i \t delay3:%i"%(delay1, delay2,delay3))
+
     if((dels>0).any()):
         most_neg = np.max(dels)
         adc0_delay = most_neg+curr_delay[0]
     else:
         #if every one is negative we could set the other one
+        adc0_delay = curr_delay[0]
         adc1_delay = curr_delay[1]-delay1
         adc2_delay = curr_delay[2]-delay2
         adc3_delay = curr_delay[3]-delay3
@@ -129,19 +150,61 @@ def main():
     generator = rm.open_resource(args.generator_name)
     generator.write("power "+str(args.genpow)+" dBm")
 
+    ##reset the delays
+    roach.write_int('adc0_delay',0)
+    roach.write_int('adc1_delay',0)
+    roach.write_int('adc2_delay',0)
+    roach.write_int('adc3_delay',0)
+    
+    fig, spectra_data, phases_data = create_figure(args.bandwidth)
+    
     print("Start Synchronizing ADCs...")
     prev_delays = np.zeros(4)
     while(1):
         new_delays = sync_iter(roach, generator,prev_delays, test_freqs, 
-                args.bandwidth, args.snap_names)
+                args.bandwidth, args.snap_names, spectra_data, phases_data,
+                fig)
         print("new delays:")
-        print("adc0: %i \t adc1: %i \t adc2: %i \t adc3: %i" %(new_delays[0], new_delays[1], new_delays[2]), new_delays[3])
-        for i in range(4):
-            roach_control.set_adc_latencies(i, new_delays[i])
+        print("adc0: %i \t adc1: %i \t adc2: %i \t adc3: %i" %(new_delays[0], new_delays[1], new_delays[2], new_delays[3]))
+        roach.write_int('adc0_delay', new_delays[0])
+        roach.write_int('adc1_delay', new_delays[1])
+        print(roach.read_int('adc1_delay'))
+        roach.write_int('adc2_delay', new_delays[2])
+        roach.write_int('adc3_delay', new_delays[3])
         time.sleep(0.5)
         if(np.sum(prev_delays-np.array(new_delays))==0):
             print("Synchronization done :)")
             break
+        prev_delays = new_delays
+
+
+def create_figure(bw):
+    fig, axes = plt.subplots(2,4, squeeze=False)
+    fig.set_tight_layout(True)
+    fig.show()
+    fig.canvas.draw()
+    ###plots for the spectrum at each ADCs
+    spectra_data = []
+    for i in range(4):
+        axes[0,i].set_xlim(0,bw)
+        axes[0,i].set_ylim(0, 100)
+        axes[0,i].set_xlabel('Frequency MHz')
+        axes[0,i].set_ylabel('dB')
+        axes[0,i].grid()
+        data, = axes[0,i].plot([],[])
+        spectra_data.append(data)
+    ###plots for the relatives phases
+    phases_data = []
+    for i in range(4):
+        axes[1,i].set_xlim(0,bw)
+        axes[1,i].set_ylim(-200,200)
+        axes[1,i].set_xlabel('Frequency MHz')
+        axes[1,i].set_ylabel('phases')
+        axes[1,i].grid()
+        data, = axes[1,i].plot([],[])
+        phases_data.append(data)
+    return fig, spectra_data, phases_data
+    
 
 if __name__ == '__main__':
     main()
