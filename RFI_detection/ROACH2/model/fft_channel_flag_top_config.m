@@ -88,7 +88,22 @@ function fft_chann_flag_top_config(this_block)
   %    this_block.addFile('');
   %    this_block.addFile('');
   %this_block.addFile('fft_chann_flag.v');
+  this_block.addFile('rtl/acc_control.v');
+  this_block.addFile('rtl/shift.v');
+  this_block.addFile('rtl/signed_cast.v');
+  this_block.addFile('rtl/dsp48_mult.v');
+  this_block.addFile('rtl/complex_mult.v');
+  this_block.addFile('rtl/complex_power.v');
+  this_block.addFile('rtl/delay.v');
+  this_block.addFile('rtl/unsign_cast.v');
+  this_block.addFile('rtl/resize_module.v');
+  this_block.addFile('rtl/vector_accumulator.v');
+  this_block.addFile('rtl/rfi_correlation.v');
+  this_block.addFile('rtl/rfi_power.v');
+  this_block.addFile('rtl/sync_simple_dual_ram.v');
+  this_block.addFile('fft_chann_flag.v');
   this_block.addFile('fft_channel_flag_top.v');
+
   
 return;
 

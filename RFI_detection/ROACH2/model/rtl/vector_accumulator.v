@@ -1,4 +1,3 @@
-`default_nettype none
 
 
 /*
@@ -113,7 +112,7 @@ generate
                     end
                     else begin
                         //not continous data
-                        dout_r <= bram_out_r[2*DOUT_WIDTH:DOUT_WIDTH];
+                        dout_r <= bram_out_r[2*DOUT_WIDTH-1:DOUT_WIDTH];
                     end
                 end
                 else begin
@@ -148,7 +147,7 @@ generate
                     end
                     else begin
                         //not continous data
-                        dout_r <= $signed(bram_out_r[2*DOUT_WIDTH:DOUT_WIDTH]);
+                        dout_r <= $signed(bram_out_r[2*DOUT_WIDTH-1:DOUT_WIDTH]);
                     end
                 end
                 else begin

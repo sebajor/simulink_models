@@ -1,4 +1,3 @@
-`default_nettype none
 
 /*
 *   Multiplier infering a dsp48e2

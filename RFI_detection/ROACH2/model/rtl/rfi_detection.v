@@ -1,10 +1,9 @@
-`default_nettype none
 
 module rfi_detection #(
     parameter DIN_WIDTH = 18,
-    parameter CHANNEL_ADDR = 11,
+    parameter CHANNEL_ADDR = 9,
     //first resize of the input data
-    parameter CAST_SHIFT = 6,
+    parameter CAST_SHIFT = 5,
     parameter CAST_DELAY = 0,
     parameter CAST_WIDHT = 9,
     parameter CAST_POINT = 8,
@@ -14,13 +13,13 @@ module rfi_detection #(
     //
     parameter ACC_WIDTH = 32,
     parameter POST_ACC_SHIFT = 0,
-    parameter POST_ACC_WIDTH = 32,
-    parameter POST_ACC_POINT = 16,
+    parameter POST_ACC_WIDTH = 17,
+    parameter POST_ACC_POINT = 7,
     parameter POST_ACC_DELAY = 0,
     //
     parameter DOUT_SHIFT =0,
-    parameter DOUT_WIDTH = 16,
-    parameter DOUT_POINT = 12,
+    parameter DOUT_WIDTH = 18,
+    parameter DOUT_POINT = 8,
     parameter DEBUG = 1
 )(
     input wire clk,

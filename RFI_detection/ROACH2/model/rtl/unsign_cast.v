@@ -1,4 +1,3 @@
-`default_nettype none
 
 module unsign_cast #(
     parameter DIN_WIDTH = 8,

@@ -1,4 +1,3 @@
-`default_nettype none
 
 module rfi_correlation #(
     parameter DIN_WIDTH = 18,

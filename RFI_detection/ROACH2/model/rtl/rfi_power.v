@@ -1,4 +1,3 @@
-`default_nettype none
 
 module rfi_power #(
     parameter DIN_WIDTH = 18,

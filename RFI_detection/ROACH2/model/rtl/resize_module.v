@@ -1,4 +1,3 @@
-`default_nettype none
 
 module resize_module #(
     parameter DIN_WIDTH = 18,
@@ -48,7 +47,7 @@ always@(posedge clk)begin
 end
 
 
-wire valid_cast;
+wire [PARALLEL-1:0]valid_cast;
 wire [DOUT_WIDTH*PARALLEL-1:0] din_cast;
 wire [2*PARALLEL-1:0] cast_warning;
 generate 
@@ -96,7 +95,7 @@ delay #(
     .DELAY_VALUE(DELAY)
 ) delay_inst (
     .clk(clk),
-    .din({din_cast, valid_cast, sync_delay}),
+    .din({din_cast, valid_cast[0], sync_delay}),
     .dout({dout, dout_valid, sync_out})
 );
 
