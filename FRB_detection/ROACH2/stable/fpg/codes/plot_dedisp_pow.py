@@ -38,8 +38,8 @@ def animate(i):
     for i in range(len(dedisp_brams)):
         dedisp_pow = calan.read_data(roach, dedisp_brams[i], 10,32,'>u4')
         thresh = calan.read_data(roach, thresh_brams[i], 10,32,'>u4')
-        dedisp_pow = 10*np.log10(dedisp_pow)
-        thresh = 10*np.log10(thresh)
+        dedisp_pow = 10*np.log10(dedisp_pow+1)
+        thresh = 10*np.log10(thresh+1)
         #dedisp_pow = dedisp_pow/2.**13
         #thresh = thresh/2.**13
         data[2*i].set_data(np.arange(2**10), dedisp_pow)

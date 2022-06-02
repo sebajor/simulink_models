@@ -3,7 +3,9 @@ import calandigital as calan
 from calandigital.instruments import generator
 import time
 from utils import *
+from dram_class import dram_ring
 
+#TODO: change the adc_deay1 register for status!!!
 
 """
 -the control_control register has the following bit fields:
@@ -13,8 +15,10 @@ from utils import *
     3    :  tge_en          :enable the 10Gbe
     4    :  rst_tge         :reset the 10Gbe
     5-6  :  adc_lat_sel     :select to which snapshot write the delay
-    7:12 :  acc_len_sel     :select which accumulator set   
-    13   :  reset_dedisp    :reset dedispersors and mov avg
+    7:11 :  acc_len_sel     :select which accumulator set   
+    12   :  reset_dedisp    :reset dedispersors and mov avg
+    13   :  en_dedisp       :enable dedispersor accumulation. Enable this accumulation after setting the accumultions.
+    14   :  rfi_en          :enable the rfi subsystem (if not on, there is no rfi block signal for the detection)
 
 
 -the control_adc_delay writes the delay to sync the ADCs inputs.
@@ -26,12 +30,17 @@ from utils import *
     32:     flag en         :enable write the flag 
 
 -control_gain:  gain of the ADC before bit reduction for the DRAM   
+
+-control_status inform the status of the system:
+    0   :   frb_detection 
+    1   :   rfi_detected
 """
 
 
 class roach_control():
     def __init__(self, roach):
         self.roach = roach
+        self.dram = None
 
     def reset_accumulators(self):
         """reset all the accumulators in the model
@@ -72,6 +81,15 @@ class roach_control():
         data = set_bit(curr_state, 3)
         self.roach.write_int('control_control', data)
 
+
+    def enable_rfi_subsystem(self):
+        """ Enable RFI subsystem
+            If the subsystem is off then the RFI flag is not considered for the
+            FRB detection
+        """
+        curr_state = self.roach.read_int('control_control')
+        data = set_bit(curr_state, 14)
+        self.roach.write_int('control_control', data)
 
     def flag_frequencies(self, frequencies ,near=None, channels=2048, bw_edges=[1200,1800]):
         """
@@ -191,8 +209,10 @@ class roach_control():
         num     :    select where to write the accumulation
                      0      :   10gbe and antennas
                      1-n    :   dedispersors accs
+                     30     :   rfi holding time
+                     31     :   rfi accumulation
         acc     :    accumulation to set
-        thresh  :    threshold for the dedispersors
+        thresh  :    threshold for the dedispersors and num=31 is threshold
         """
         curr_state = self.roach.read_int('control_control')
         data = write_bitfield(curr_state, num, [7,12])
@@ -222,9 +242,66 @@ class roach_control():
         acc = int(round(integ_time/nchnls*fpga_clk))
         self.set_accumulation(acc, 0)
         self.roach.tap_start('tx_tap',tx_core,mac_base+source_ip,source_ip,port)
-        
-    def reset_dedispersor(self):
+
+    def enable_dedispersor_acc(self):
+        """
+        Enable the accumulators for the dedispersion. This should be done just one
+        time, after setting the accumulations.
+        """
         curr_state = self.roach.read_int('control_control')
         state = set_bit(curr_state, 13)
         self.roach.write_int('control_control', state)
+        time.sleep(0.1)
+        
+    def reset_dedispersor(self):
+        """ Reset the dedispersors
+        """
+        curr_state = self.roach.read_int('control_control')
+        state = set_bit(curr_state, 12)
+        self.roach.write_int('control_control', state)
+        time.sleep(0.1)
+        state = clear_bit(state, 12)
+        self.roach.write_int('control_control', state)
+
+    def read_frb_detection(self):
+        dat = self.roach.read_int('control_adc_delay1') ##change this name!!
+        dat = dat & 1
+        return dat
+
+    def set_ring_buffer_gain(self, gain):
+        """
+        For the DRAM ring buffer the adc samples are reduced to 4 bits. To adjust 
+        that 4 bits into a given range we multiply the samples by a gain.
+        The gain uses 32_10 UFix data type.
+        """
+        gain_bin = calan.float2fixed(np.array(gain), 32,10, signed=False)
+        self.roach.write_int('control_gain', gain_bin)
+
+
+    def initialize_dram(self, addr=('10.0.0.29', 1234), n_pkt=10):
+        """
+        Creates the DRAM object to control arte ring buffer
+        addr:   (computer recv ip, destination port)
+        n_pkt:  number of frames send in one packet
+        """
+        if(self.dram is not None):
+            raise Exception('There is already one dram object')
+        self.dram = dram_ring(self.roach, sock_addr=addr, n_pkt=n_pkt)
+    
+    def write_dram(self):
+        """
+        Enable the write of the DRAM ring buffer
+        """
+        if(self.dram is None):
+            raise Exception("There is no dram object, call initialize_dram")
+        self.dram.init_ring()
+
+    def read_dram(self, filename='data'):
+        """Stop the writing procedure and start reading the saved data in the DRAM.
+        It should take like 3 minutes
+        """
+        if(self.dram is None):
+            raise Exception("There is no dram object, call initialize_dram")
+        self.dram.reading_dram()
+
 

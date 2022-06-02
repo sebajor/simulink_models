@@ -83,8 +83,41 @@ def get_dedispersed_mov_avg(roach, index):
     data = calan.read_data(roach, 'avg'+str(index), awidth=10, dwidth=32, dtype='>I')
     return data
 
+def disp_time(dm, flow, fhigh):
+    """
+    Compute dispersed FRB duration.
+    :param dm: Dispersion measure in [pc*cm^-3]
+    :param flow: Lower frequency of FRB in [MHz]
+    :param fhigh: Higher frequency of FRB in [MHz]
+    """
+    # DM formula (1e-3 to change from ms to s)
+    k = 4.16e6 # formula constant [MHz^2*pc^-1*cm^3*ms]
+    td = k*dm*(flow**-2 - fhigh**-2)*1e-3
+    return td
 
-#class to read the 10gbe data
+
+def compute_accs(fcenter, bw, nchnls, DMs):
+    k= 4.16e6 # formula constant [MHz^2*pc^-1*cm^3*ms]
+
+    flow    = fcenter - bw/2 # MHz
+    fhigh   = fcenter + bw/2 # MHz
+    iffreqs = np.linspace(0, bw, nchnls/32, endpoint=False)
+    rffreqs = iffreqs + flow
+    Ts      = 1/(2*bw) # us
+    tspec   = Ts*nchnls # us
+
+    binsize = iffreqs[1]
+    fbin_low = rffreqs[-2]+binsize/2
+    fbin_high = rffreqs[-1]+binsize/2
+    accs = []
+    for dm in DMs:
+        disptime = disp_time(dm, fbin_low, fbin_high)
+        acc = 1.*disptime*1e6/tspec
+        accs.append(int(round(acc)))
+    print('Computed accumulations: '+ str(accs))
+    return accs
+
+
 #class to read the 10gbe data
 
 class read_10gbe_data():
@@ -133,7 +166,7 @@ class read_10gbe_data():
 
 ###debug functions
 def get_resample_beam(roach, dwidth=32, dtype='>I'):
-    data = calan.read_data(roach, 'debug', awidth=6,dwidth=dwidth, dtype=dtype)
+    data = calan.read_data(roach, 'debug_acc', awidth=6,dwidth=dwidth, dtype=dtype)
     return data
 
 def get_acc_resample_beam(roach, dwidth=32, dtype='>I'):
@@ -142,7 +175,7 @@ def get_acc_resample_beam(roach, dwidth=32, dtype='>I'):
 
 def get_rfi_signals(roach):
     corr_spect = calan.read_data(roach, 'rfi_corr', 11, 16, '>h')
-    pow_spect = calan.read_data(roach, 'rfi_mult', 11, 16, '>h')
+    pow_spect = calan.read_data(roach, 'rfi_pow', 11, 16, '>h')
     return [corr_spect, pow_spect]
 
 def get_rfi_score(roach):

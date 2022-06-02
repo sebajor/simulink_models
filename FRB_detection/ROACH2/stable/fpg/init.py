@@ -14,10 +14,10 @@ from flag_channels import flag_channels
 #hyper parameters
 #################################################################
 
-roach_ip ='192.168.1.168'#'10.17.89.168'#168'#'192.168.1.14'
+roach_ip ='192.168.1.18'#'10.17.89.168'#168'#'192.168.1.14'
 boffile = 'arte_preliminar2.fpg'
 
-gain = 1#2**12       #2**2 receiver   #for requant of the ffts
+gain = 2**12#1#2**12       #2**2 receiver   #for requant of the ffts
 gain_adc = 2**14                    #for requant of the dram ring buffer
 
 #rfi ranking parameters

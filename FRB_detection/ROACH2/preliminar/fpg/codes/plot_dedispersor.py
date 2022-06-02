@@ -22,7 +22,7 @@ def plot_dedispersor(_fpga,  DMs):
     global fpga, data, index
     fpga = _fpga
     index = len(DMs)
-    y_lim = (0,100)
+    y_lim = (0,58)
     data = []
     fig = plt.figure()
     for i in range(index):
@@ -35,6 +35,7 @@ def plot_dedispersor(_fpga,  DMs):
         thresh, = ax.plot([],[])
         data.append(dat)
         data.append(thresh)
+    plt.tight_layout()
     anim = FuncAnimation(fig, animate, interval=50, blit=True)
     plt.show()
 
@@ -43,7 +44,7 @@ def animate(_):
         dedisp_pow = utils.get_dedispersed_power(fpga, i)
         thresh = utils.get_dedispersed_mov_avg(fpga, i)
         dedisp_pow = 10*np.log10(dedisp_pow+1)
-        thresh = 10*np.log10(thresh)
+        thresh = 10*np.log10(thresh+1)
         data[2*i].set_data(np.arange(2**10), dedisp_pow)
         data[2*i+1].set_data(np.arange(2**10), thresh)
     return data

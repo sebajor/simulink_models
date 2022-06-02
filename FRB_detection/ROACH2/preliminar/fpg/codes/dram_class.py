@@ -3,7 +3,8 @@ import socket, struct, sys,time
 
 class dram_ring():
 
-    def __init__(self, fpga, fpga_addr=('10.0.0.45',1234), sock_addr=('10.0.0.29', 1234), tx_core_name = 'one_GbE', n_pkt=10):
+    def __init__(self, fpga, fpga_addr=('10.0.0.45',1234), sock_addr=('10.0.0.29', 1234), 
+            tx_core_name = 'one_GbE', n_pkt=10):
         """sock address = (gbe ip address, port)
         """
         self.fpga = fpga
@@ -50,10 +51,12 @@ class dram_ring():
     def init_ring(self):
         self.fpga.write_int('ring_configuration',0)     
         self.fpga.write_int('ring_configuration',1)     ##start writing
-        self.fpga.write_int('control1',1)    
+        #self.fpga.write_int('control1',1)    
+        self.fpga.write_int('control1',0b101)    
 
 
     def reading_dram(self, filename='data'):
+        self.fpga.write_int('control1', 0)
         f = file(filename, 'wb')            ##CHANGE TO APPEND!!
         start = time.time()
         self.fpga.write_int('ring_configuration', 0b110000)

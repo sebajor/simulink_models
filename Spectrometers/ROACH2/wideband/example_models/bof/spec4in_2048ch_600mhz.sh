@@ -1,6 +1,6 @@
 #!/bin/bash
 plot_spectra.py \
-    --ip        192.168.0.40\
+    --ip        192.168.0.168\
     --bof        spec4in_2048ch_600mhz.bof.gz\
     --upload     \
     --bramnames dout_0a_0 dout_0a_1 dout_0a_2 dout_0a_3 \
