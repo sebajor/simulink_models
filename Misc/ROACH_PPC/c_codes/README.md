@@ -21,7 +21,7 @@ That should generate the file out_file. Now you should need pass the executable 
 1. Log into the PowerPC using telnet `telnet <roach_ip>`
 2. Inside the PowerPC moves into a writeable folder like /tmp
 3. Run `nc -l <roach_ip> -p 1234 > out`
-4. Open a second terminal and run `nc -w 5 <roach_ip> 1234 out_file `
+4. Open a second terminal and run `nc -w 5 <roach_ip> < 1234 out_file `
 
 That sends the out_file to the PowerPC and it receive it and call it out. Also to run it you have to give it execution execution permissions `chmod +x out`
 

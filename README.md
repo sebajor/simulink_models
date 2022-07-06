@@ -14,10 +14,10 @@ calandigital projects:
 - [x] RFI Mitigation
 - [x] RFI Adaptative Filter
 - [x] Spectrometers
-- [ ] Snapshots (ADCs calibration/synchronization)
+- [x] Snapshots (ADCs calibration/synchronization)
 - [x] 10Gbe connection
 - [x] 1Gbe connection  
-- [ ] FRB detector
+- [x] FRB detector
 - [ ] mSDFT correlator
 - [ ] Direction of Arrival (unitary ESPRIT)
 - [ ] Misc
