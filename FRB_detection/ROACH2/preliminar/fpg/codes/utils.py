@@ -2,45 +2,6 @@ import calandigital as calan
 import numpy as np
 import os
 
-##some bitwise operations
-
-def set_bit(data, bit_ind):
-    """ 
-    set the bit_ind but dont touch the others
-    """
-    data |= (1<<bit_ind)
-    return data
-
-def clear_bit(data, bit_ind):
-    """
-    clear the bit_ind but dont touch the others
-    """
-    data &= ~(1<<bit_ind)
-    return data
-
-def flip_bit(data, bit_ind):
-    """
-    change the bit_ind status
-    """
-    data ^= (1<<bit_ind)
-    return data
-
-def get_bit(data, bit_ind):
-    bit = data & (1<<bit_ind)
-    return bit
-
-
-def write_bitfield(prev_state, word, bitfield):
-    """ prev_state  :   the word previous word, over you are going to write
-        word        :   the word you want to write into the bitfield
-        bitfield    :   start and end of the bitfield
-    """
-    if((word<<bitfield[0])> 2**bitfield[1]):
-        raise Exception('The word is grater than the bitfield')
-    mask = (2**(bitfield[1]-bitfield[0])-1)<<bitfield[0]
-    clean_state = prev_state & ~(mask)  ##check
-    new_state = clean_state | (word<<bitfield[0])
-    return new_state
 
 
 def relative_phase(data0, data1, freq, fs=1200, dft_len=2048):
@@ -58,6 +19,9 @@ def relative_phase(data0, data1, freq, fs=1200, dft_len=2048):
 
 
 def get_antenas(roach, dwidth=32, dtype='>I'):
+    """
+    Obtain the antennas spectrums
+    """
     brams = ['antenna_0','antenna_1', 'antenna_2', 'antenna_3']
     antenas = np.zeros([4, 2048])
     for i in range(len(brams)):
@@ -65,6 +29,9 @@ def get_antenas(roach, dwidth=32, dtype='>I'):
     return antenas
 
 def get_beam(roach, dwidth=32, dtype='>I'):
+    """
+    Obtain synthesized beam spectrum
+    """
     beam = calan.read_data(roach, 'beam', awidth=11, dwidth=dwidth, dtype=dtype)
     return beam
 
@@ -162,6 +129,45 @@ class read_10gbe_data():
         self.f.close()
 
 
+##some bitwise operations
+
+def set_bit(data, bit_ind):
+    """
+    set the bit_ind but dont touch the others
+    """
+    data |= (1<<bit_ind)
+    return data
+
+def clear_bit(data, bit_ind):
+    """
+    clear the bit_ind but dont touch the others
+    """
+    data &= ~(1<<bit_ind)
+    return data
+
+def flip_bit(data, bit_ind):
+    """
+    change the bit_ind status
+    """
+    data ^= (1<<bit_ind)
+    return data
+
+def get_bit(data, bit_ind):
+    bit = data & (1<<bit_ind)
+    return bit
+
+
+def write_bitfield(prev_state, word, bitfield):
+    """ prev_state  :   the word previous word, over you are going to write
+        word        :   the word you want to write into the bitfield
+        bitfield    :   start and end of the bitfield
+    """
+    if((word<<bitfield[0])> 2**bitfield[1]):
+        raise Exception('The word is grater than the bitfield')
+    mask = (2**(bitfield[1]-bitfield[0])-1)<<bitfield[0]
+    clean_state = prev_state & ~(mask)  ##check
+    new_state = clean_state | (word<<bitfield[0])
+    return new_state
 
 
 ###debug functions

@@ -1,6 +1,6 @@
 import calandigital as calan
 import numpy as np
-import sys, time
+import sys, time, corr
 sys.path.append('codes')
 import utils, control
 
@@ -8,7 +8,7 @@ import utils, control
 ### hyperparameters
 ###
 roach_ip ='192.168.1.18'
-boffile = 'arte_new1.fpg'
+boffile = 'arte_new2.fpg'
 
 ##harcoded parameters
 fpga_clk = 150.*10**6
@@ -44,8 +44,9 @@ flags = flags+[1024]
 ###
 
 
-roach = calan.initialize_roach(roach_ip, boffile=boffile, upload=1)
-time.sleep(1)
+#roach = calan.initialize_roach(roach_ip, boffile=boffile, upload=1)
+roach = corr.katcp_wrapper.FpgaClient(roach_ip)
+time.sleep(2)
 
 roach_control = control.roach_control(roach)
 roach_control.set_snap_trigger()
@@ -70,9 +71,9 @@ roach_control.initialize_10gbe(integ_time=log_time)
 roach_control.enable_10gbe()
 
 #initialize ring buffer subsystem
-roach_control.set_ring_buffer_gain(adc_gain)
-roach_control.initialize_dram(addr=sock_addr, n_pkt=dram_frames)
-roach_control.write_dram()
+#roach_control.set_ring_buffer_gain(adc_gain)
+#roach_control.initialize_dram(addr=sock_addr, n_pkt=dram_frames)
+#roach_control.write_dram()
 
 
 #enable rfi subsytem
