@@ -140,6 +140,7 @@ def analog_measure(roach, rigol, pow0_info, pow1_info, cal0_info, cal1_info,
     rigol.turn_output_on(2)
     if(not rigol.get_status(2)):
         raise Exception('Channel 2 doesnt turn on!')
+    time.sleep(3)
     
     print('Singled ended data0')
     const = np.zeros(channels, dtype=complex)
@@ -158,6 +159,7 @@ def analog_measure(roach, rigol, pow0_info, pow1_info, cal0_info, cal1_info,
     rigol.turn_output_on(1)
     if(not rigol.get_status(1)):
         raise Exception('Channel 1 doesnt turn on!')
+    time.sleep(3)
     time.sleep(sleep_time)
     print('Singled ended data0')
     const = np.zeros(channels, dtype=complex)

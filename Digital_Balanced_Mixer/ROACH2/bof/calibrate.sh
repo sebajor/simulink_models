@@ -2,7 +2,7 @@
 
 calibrate_adc5g.py \
     -i 192.168.1.12\
-    --genname TCPIP::192.168.1.39::INSTR \
+    --genname TCPIP::192.168.1.33::INSTR \
     --genfreq 10\
     --genpow -3\
     --zdok0snaps adcsnap0\

@@ -10,4 +10,4 @@ plot_spectra.py \
     --nbits     8 \
     --countreg  cnt_rst \
     --accreg    cal_acc_len \
-    --acclen    $((2**8))
+    --acclen    8192 

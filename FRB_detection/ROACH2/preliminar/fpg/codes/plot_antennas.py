@@ -16,7 +16,7 @@ parser.add_argument("-u", "--upload", dest="upload", action="store_true",
 def plot_antennas(_fpga, _freq=[1200, 1800]):
     global fpga, data, freq
     fpga = _fpga
-    y_lim = (0,100)
+    y_lim = (-95,0)
     data = []
     axes = []
     freq = np.linspace(_freq[0], _freq[1], 2048, endpoint=0)
@@ -27,6 +27,7 @@ def plot_antennas(_fpga, _freq=[1200, 1800]):
         ax.set_xlim(freq[0], freq[-1])
         ax.grid()
         ax.set_title('Antenna %i' %i)
+        ax.set_ylabel('dBFS')
         line, = ax.plot([],[],lw=2)
         data.append(line)
     anim = FuncAnimation(fig, animate, interval=50, blit=True)
@@ -35,7 +36,7 @@ def plot_antennas(_fpga, _freq=[1200, 1800]):
 def animate(i):
     dat = utils.get_antenas(fpga)
     for i in range(4):
-        spec = 10*np.log10(dat[i,:]+1)
+        spec = 10*np.log10(dat[i,:]+1)-118.08291
         data[i].set_data(freq, spec)
     return data
 

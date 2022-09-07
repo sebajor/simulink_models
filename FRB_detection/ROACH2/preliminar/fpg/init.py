@@ -49,8 +49,8 @@ roach = corr.katcp_wrapper.FpgaClient(roach_ip)
 time.sleep(2)
 
 roach_control = control.roach_control(roach)
+time.sleep(0.5)
 roach_control.set_snap_trigger()
-
 roach_control.flag_channels(flags)
 
 ###compute the necessary accumulations

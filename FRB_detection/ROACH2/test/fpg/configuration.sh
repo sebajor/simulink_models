@@ -1,4 +1,0 @@
-ROACH_IP="10.17.89.91"
-BOF_FILE="arte.fpg"
-RFI_ACC=1024
-
