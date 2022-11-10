@@ -60,11 +60,19 @@
 #define PACKET_LEN 10  //actually is PKT_LEN*(8*8+12*4+2*4)
 
 int accumulation_done(int* en){
+<<<<<<< HEAD
     //
+=======
+    //return 1 if the accumulation in the FPGA is ready
+>>>>>>> dadcb696233e71373f0ac23593fbb9047fb1ff27
     return en[1];
 }
 
 int reset_accumulation(int* rst){
+<<<<<<< HEAD
+=======
+    //reset the accumulator flag and enables a new accumulation
+>>>>>>> dadcb696233e71373f0ac23593fbb9047fb1ff27
     rst[128] = 1;
     sleep(0.1);
     rst[128] = 0;
@@ -72,11 +80,19 @@ int reset_accumulation(int* rst){
 }
 
 int enable_writing(int* reg){
+<<<<<<< HEAD
+=======
+    //enable the writing of the correlation bram
+>>>>>>> dadcb696233e71373f0ac23593fbb9047fb1ff27
     reg[0] = 1;
     return 0;
 }
 
 int setup_system(int* reg){
+<<<<<<< HEAD
+=======
+    //setup the debug LFSR system to emulate a 16x16 correlation calculation
+>>>>>>> dadcb696233e71373f0ac23593fbb9047fb1ff27
     //this one is valid just for the test system 
     reg[0]  = 0;                            //en
     reg[64] = MATRIX_SIZE*(MATRIX_SIZE+1)/2;//read_size

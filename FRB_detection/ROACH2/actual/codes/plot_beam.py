@@ -16,7 +16,11 @@ parser.add_argument("-u", "--upload", dest="upload", action="store_true",
 def plot_beam(_fpga, _freq=[1200, 1800]):
     global fpga, data, freq
     fpga = _fpga
+<<<<<<< HEAD
     y_lim = (-90,0)
+=======
+    y_lim = (0,100)
+>>>>>>> dadcb696233e71373f0ac23593fbb9047fb1ff27
     data = []
     axes = []
     freq = np.linspace(_freq[0], _freq[1], 2048, endpoint=0)
@@ -32,7 +36,11 @@ def plot_beam(_fpga, _freq=[1200, 1800]):
 
 def animate(i):
     dat = utils.get_beam(fpga)
+<<<<<<< HEAD
     spec = 10*np.log10(dat+1)-111.119
+=======
+    spec = 10*np.log10(dat+1)
+>>>>>>> dadcb696233e71373f0ac23593fbb9047fb1ff27
     data.set_data(freq, spec)
     return data,
 

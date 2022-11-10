@@ -1,5 +1,9 @@
 
+<<<<<<< HEAD
 `include "/home/Workspace/seba/frb_actual/includes.v"
+=======
+`include "/home/Workspace/seba/arte_debug/v6/rtl/includes.v"
+>>>>>>> dadcb696233e71373f0ac23593fbb9047fb1ff27
 module rfi_detection #(
     parameter DIN_WIDTH = 18,
     parameter CHANNEL_ADDR = 9,

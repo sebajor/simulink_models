@@ -3,8 +3,10 @@ import numpy as np
 
 ##hyperparamters
 roach_ip = '192.168.1.12'
-syn_acc_len = 1024
-cal_acc_len = 1024
+#syn_acc_len = 1024
+#cal_acc_len = 1024
+syn_acc_len = 2**15#1350000#2**15
+cal_acc_len = 2**15#1350000#2**15
 
 channels = 2048
 bw = 1080
@@ -26,11 +28,10 @@ rs_ip = '192.168.1.48'
 rs_port = 4040
 
 #psg info
-"""
 psg_info= { 'type':'visa',
             'connection': 'TCPIP::192.168.1.31::INSTR',
             'def_freq':13700,
-            'def_power':6
+            'def_power':14
         }
 """
 psg_info= { 'type':'visa',
@@ -38,8 +39,10 @@ psg_info= { 'type':'visa',
             'def_freq':15300,
             'def_power':6
         }
-
-test_lo_power = [14,15,3]#[11,13,3]#[9,13, 5] #low pow, high_pow, number of steps
+"""
+test_lo_freq = [12, 14, 10] #low freq, high freq, steps
+#test_lo_freq = [14.3, 16.3, 17] #low freq, high freq, steps
+test_lo_power = [14,15,3] #low pow, high_pow, number of steps
 
 ##Noise source parameters
 noise_enr_db = 15  #goes from 14-16 dB

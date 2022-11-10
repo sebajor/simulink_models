@@ -1,6 +1,6 @@
 import calandigital as calan
 import numpy as np
-import sys, time
+import sys, time, corr
 sys.path.append('codes')
 import utils, control
 import corr
@@ -8,8 +8,13 @@ import corr
 ###
 ### hyperparameters
 ###
+<<<<<<< HEAD:FRB_detection/ROACH2/stable/init.py
 roach_ip ='10.17.89.91'
 boffile = 'arte_gpio.fpg'#'arte_new2.fpg'
+=======
+roach_ip ='192.168.1.18'
+boffile = 'arte_new2.fpg'
+>>>>>>> dadcb696233e71373f0ac23593fbb9047fb1ff27:FRB_detection/ROACH2/preliminar/fpg/init.py
 
 ##harcoded parameters
 fpga_clk = 150.*10**6
@@ -62,6 +67,7 @@ time.sleep(1)
 roach.upload_program_bof(bof_file=boffile, port=3000)
 
 #roach = calan.initialize_roach(roach_ip, boffile=boffile, upload=1)
+<<<<<<< HEAD:FRB_detection/ROACH2/stable/init.py
 #roach = calan.initialize_roach(roach_ip, upload=0)
 time.sleep(1)
 
@@ -70,6 +76,14 @@ time.sleep(0.2)
 roach_control.set_snap_trigger()
 time.sleep(0.2)
 
+=======
+roach = corr.katcp_wrapper.FpgaClient(roach_ip)
+time.sleep(2)
+
+roach_control = control.roach_control(roach)
+time.sleep(0.5)
+roach_control.set_snap_trigger()
+>>>>>>> dadcb696233e71373f0ac23593fbb9047fb1ff27:FRB_detection/ROACH2/preliminar/fpg/init.py
 roach_control.flag_channels(flags)
 
 ###compute the necessary accumulations

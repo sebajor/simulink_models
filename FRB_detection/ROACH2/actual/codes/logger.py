@@ -27,7 +27,11 @@ parser.add_argument('-tt', '--totaltime', dest='total_time', default=60,
         type=float)
 parser.add_argument('-ri', '--roach_ip', dest='roach_ip', default='10.17.89.91')
 parser.add_argument('-dms', '--dms', dest='dms', nargs="*")
+<<<<<<< HEAD
 parser.add_argument('-cal', '--cal', dest='cal_time', default=1, type=float)
+=======
+parser.add_argument('-cal', '--cal', dest='cal_time', default=1)
+>>>>>>> dadcb696233e71373f0ac23593fbb9047fb1ff27
 
 
 
@@ -120,7 +124,11 @@ def receive_10gbe_data(folder, file_time,total_time=None,ip_addr='192.168.2.10',
         p.start()
         roach_control.enable_diode()
         time.sleep(cal_time)
+<<<<<<< HEAD
         roach_control.disable_diode()
+=======
+        roach.control.disable_diode()
+>>>>>>> dadcb696233e71373f0ac23593fbb9047fb1ff27
         start = time.time()
         dm_acq.reset_acq(start)
         detections = []

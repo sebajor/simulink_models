@@ -7,6 +7,7 @@ python2 upload_curve.py \
     --v_max 8 \
     --freq 1200 1800\
     --genname TCPIP::192.168.1.45::INSTR \
-    --npts 16384 \
+    --npts 16384\
     --trigger
+
 

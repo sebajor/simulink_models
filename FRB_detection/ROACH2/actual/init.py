@@ -9,7 +9,11 @@ import corr
 ### hyperparameters
 ###
 roach_ip ='10.17.89.91'
+<<<<<<< HEAD
 boffile = 'arte_headers2.fpg'#'arte_gpio.fpg'#'arte_new2.fpg'
+=======
+boffile = 'arte_gpio.fpg'#'arte_new2.fpg'
+>>>>>>> dadcb696233e71373f0ac23593fbb9047fb1ff27
 
 ##harcoded parameters
 fpga_clk = 150.*10**6
@@ -20,14 +24,22 @@ nchannels = 2048.
 ##dedispersors
 ##(the dedispersor output and the treshold is a 20_10UFix)
 DMs = [45,90,135,180,225,270,315,360,405,450,495]
+<<<<<<< HEAD
 thresh = np.ones(11)*16
 # np.ones(11)*32#[4,4,4,4, 4, 4]     ## for each DM the detection threshold is
+=======
+thresh = np.ones(11)*32#[4,4,4,4, 4, 4]     ## for each DM the detection threshold is 
+>>>>>>> dadcb696233e71373f0ac23593fbb9047fb1ff27
                                         ## mov avg+thresh
 #10Gbe log
 log_time = 10.**-2                       ##10Gbe frame rate
 
 #rfi detection
+<<<<<<< HEAD
 rfi_acc_len = 1024#256                       ##rfi subsystem accumulation
+=======
+rfi_acc_len = 256                       ##rfi subsystem accumulation
+>>>>>>> dadcb696233e71373f0ac23593fbb9047fb1ff27
 rfi_thresh = 0.8                        ##over rfi_thresh is considered as rfi event
 rfi_hold = 0.5                          ##if an rfi event is detected we dont allow an FRB 
                                         ##detection for rfi_hold seconds
