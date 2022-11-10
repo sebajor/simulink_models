@@ -87,8 +87,9 @@ function fft_chann_flag_top_config(this_block)
 
   %    this_block.addFile('');
   %    this_block.addFile('');
-  this_block.addFile('hdl_codes/fft_chann_flag.v');
-  this_block.addFile('hdl_codes/fft_channel_flag_top.v');
+  %this_block.addFile('rtl/fft_chann_flag.v');
+  this_block.addFile('includes.v');
+  this_block.addFile('rtl/fft_channel_flag_top.v');
   
 return;
 

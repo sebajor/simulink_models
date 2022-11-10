@@ -118,7 +118,8 @@ function pfb_fft_8in_2048ch_config(this_block)
 
   %    this_block.addFile('');
   %    this_block.addFile('');
-  this_block.addFile('hdl_codes/pfb_fft_8in_2048ch.vhd');
+  this_block.addFile('includes.v');
+  this_block.addFile('rtl/pfb_fft_8in_2048ch.vhd');
 
 return;
 

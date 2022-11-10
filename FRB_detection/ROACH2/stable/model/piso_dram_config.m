@@ -88,8 +88,9 @@ function piso_dram_config(this_block)
   %    this_block.addFile('');
   %    this_block.addFile('');
 
-  dir = '/home/seba/frb_stable/hdl_codes/';
-  this_block.addFile(strcat(dir,'piso_dram.v'));
+  %dir = '/home/seba/frb_stable/hdl_codes/';
+  this_block.addFile('includes.v');
+  this_block.addFile('rtl/piso_dram.v');
 
 return;
 
