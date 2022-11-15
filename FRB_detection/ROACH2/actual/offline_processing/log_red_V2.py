@@ -61,6 +61,12 @@ class read_10gbe_data():
         self.n_spect -= number
         spectra = spect[:,4:]
         header = spect[:,:4]
+        ##change even and odd channels (bug from the fpga..)
+        even = spectra[:,::2]
+        odd = spectra[:,1::2]
+        spectra = np.array((odd, even))
+        spectra = np.swapaxes(spectra.T, 0,1)
+        spectra = spectra.reshape((-1,2048))
         return spectra, header
 
     def get_complete(self):
@@ -190,7 +196,7 @@ def get_image_data_temperature(filenames,cal_time=1,spect_time=1e-2,file_time=1 
             dec_size = aux.shape[0]//decimation
             aux = aux[:dec_size*decimation,:].reshape([-1, decimation, aux.shape[1]])
             aux = np.mean(aux.astype(float), axis=1)
-            data[i*(spect_size//decimation):(i+1)*(spect_size//decimation),flags] = 10*np.log10(aux+1)
+            data[i*(spect_size//decimation):(i+1)*(spect_size//decimation),flags] = 10*np.log10(aux+1)-111.119
             #now we look at the clipping
             sat = np.bitwise_and(header[:spect_size,1],2**4-1) #just take the cliping values
             sat = sat[:dec_size*decimation].reshape([-1, decimation])
@@ -238,7 +244,7 @@ def get_dm_data(filenames):
         mov_avg[8].append(f['mov_avg8'].flatten()/2.**15)
         mov_avg[9].append(f['mov_avg9'].flatten()/2.**15)
         mov_avg[10].append(f['mov_avg10'].flatten()/2.**15)
-    f.close()
+        f.close()
     return dms, mov_avg
 
 

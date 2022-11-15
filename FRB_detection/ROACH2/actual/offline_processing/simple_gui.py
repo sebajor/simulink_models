@@ -46,7 +46,7 @@ class main_app():
         self.ent_tstart.bind('<Key>', self.time_formating_start)
 
         
-        lab = tk.Label(frame1, text='Stab1 Time:')
+        lab = tk.Label(frame1, text='Stop Time:')
         lab.grid(row=0, column=2, padx=2, pady=3,sticky='n')
 
         self.tstop = tk.StringVar()
@@ -62,7 +62,7 @@ class main_app():
         self.ent_fstart.grid(row=1, column=1, padx=2, pady=3,sticky='n')
         self.ent_fstart.insert(0, "1200")
         
-        lab = tk.Label(frame1, text='Stab1 Freq: ')
+        lab = tk.Label(frame1, text='Stop Freq: ')
         lab.grid(row=1, column=2, padx=2, pady=3, sticky='n')
 
         self.ent_fstop = tk.Entry(frame1, width=30)
