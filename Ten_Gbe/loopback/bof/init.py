@@ -1,7 +1,7 @@
 import corr, time, numpy, struct, sys,socket
 import matplotlib.pyplot as plt
 
-roach_ip = '192.168.1.18'
+roach_ip = '192.168.1.12'
 
 ##with 512, 511 we transmit.. but in the recv side we lost some packages
 pkt_period = 60#512#255#100  #in FPGA clocks (200MHz) la cague
