@@ -5,6 +5,7 @@ from calandigital.instruments import generator
 import control, utils
 import corr
 import calandigital as calan
+import matplotlib.pyplot as plt
 
 ###
 ### Hyperparameters
@@ -12,9 +13,9 @@ import calandigital as calan
 serial_port = '/dev/ttyUSB0'
 roach_ip = '192.168.1.12'
 gen_info = {'type':'visa',
-            'connection': 'TCPIP::192.168.1.33::INSTR',
+            'connection': 'TCPIP::192.168.1.39::INSTR',
             'def_freq': 1450,
-            'def_power':-10
+            'def_power':20
             }
 integ_time = 1e-2   ##intergration time
 points = 361        ## points for the measurement
@@ -53,10 +54,29 @@ antennas_data = np.zeros((4,2048, points))
 theta = np.linspace(0,points*step-1,points)*np.pi/180
 gen.turn_output_on()
 
-##measure
-for i in range(points):
+
+##plot variables
+plt.ion()
+fig = plt.figure()
+ax = plt.subplot(111, polar=True)
+
+data, = ax.plot([],[])
+
+##make the first one out of the loop
+ser.write("%d\n" %step)
+time.sleep(0.5)
+beam = utils.get_beam(roach)
+antennas = utils.get_antennas(roach)
+snaps = roach_control.get_sync_snapshots(['adcsnap0', 'adcsnap1', 'adcsnap2', 'adcsnap3'])
+channel_data[0] = beam[freq_ind]
+trace_data[:,0] = beam
+snap_data[:,:,0] = snaps
+antennas_data[:,:,0] = antennas
+
+
+for i in range(1,points):
     ser.write("%d\n" %step)
-    time.sleep(0.5)
+    time.sleep(1.5)
     beam = utils.get_beam(roach)
     antennas = utils.get_antennas(roach)
     snaps = roach_control.get_sync_snapshots(['adcsnap0', 'adcsnap1', 'adcsnap2', 'adcsnap3'])
@@ -64,6 +84,11 @@ for i in range(points):
     trace_data[:,i] = beam
     snap_data[:,:,i] = snaps
     antennas_data[:,:,i] = antennas
+    ax.cla()
+    ax.plot(theta[:i], 10*np.log10(channel_data[:i]+1)-100)
+    fig.canvas.draw()
+
+
 
 np.savez('pattern_data.npz',
          theta = theta,
