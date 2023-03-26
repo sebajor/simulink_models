@@ -1,6 +1,6 @@
 #!/bin/bash
 plot_snapshots.py \
-    --ip         192.168.1.14 \
+    --ip         192.168.1.12 \
     --bof        snap2in.bof.gz \
     --upload      \
     --snapnames  adcsnap0 adcsnap1 \
