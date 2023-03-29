@@ -17,6 +17,7 @@ def get_beam(roach):
     
 def get_quantize_beam(roach):
     beam0 = calan.read_data(roach, 'beam0_0', awidth=11,dwidth=32,dtype='>I')
+    return beam0
     
 
 def get_antennas(roach):
