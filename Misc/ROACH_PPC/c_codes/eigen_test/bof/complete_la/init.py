@@ -1,9 +1,12 @@
 import calandigital as calan
 import numpy as np
-<<<<<<< HEAD
 from numpy import linalg as la
 import time
 import matplotlib.pyplot as plt
+from numpy.linalg import eigh
+import matplotlib.pyplot as plt
+import socket, telnetlib, time,os
+import ipdb
 
 
 def PiMatrix(N):
@@ -61,12 +64,6 @@ def Knu2(N, M):
 
 roach_ip = '192.168.1.18'
 boffile = '../eigen_test.bof.gz'
-=======
-from numpy.linalg import eigh
-import matplotlib.pyplot as plt
-import socket, telnetlib, time,os
-import ipdb
-
 ###
 ### Author: Sebastian Jorquera
 ###
@@ -148,14 +145,12 @@ pkt_len = 9*struct_size
 
 filename = 'data'
 codename = 'uesprit_la'
->>>>>>> dadcb696233e71373f0ac23593fbb9047fb1ff27
 
 n = 16
 seed = 10
 read_size = n*(n+1)/2
 iters = 100
 
-<<<<<<< HEAD
 np.set_printoptions(precision=3)
 sources = 5
 
@@ -199,11 +194,7 @@ def meas_test(roach, n_sources):
     return eigval, eigvec,Es, out_x, out_y, doa, elapsed
 
 roach = calan.initialize_roach(roach_ip, boffile=boffile, upload=1)
-=======
-##initialize the FPGA
-roach = calan.initialize_roach(roach_ip, boffile=boffile, upload=1)
-time.sleep(1)
->>>>>>> dadcb696233e71373f0ac23593fbb9047fb1ff27
+
 
 roach.write_int('rst',1)
 roach.write_int('seed', seed)
@@ -214,7 +205,6 @@ roach.write_int('rst',0)
 roach.write_int('en',1)
 time.sleep(1)
 
-<<<<<<< HEAD
 print('Done signal: %i' %roach.read_int('done'))
 test_time = np.zeros(iters)
 for i in range(iters):
@@ -229,7 +219,7 @@ plt.grid()
 plt.tight_layout()
 plt.savefig('pc_time.png')
 plt.close()
-=======
+
 #upload code
 print('uploading code')
 upload_code(roach_ip, codename)
@@ -257,5 +247,4 @@ f.close()
 sock.close()
 kill_process(tn)
 tn.close()
->>>>>>> dadcb696233e71373f0ac23593fbb9047fb1ff27
 

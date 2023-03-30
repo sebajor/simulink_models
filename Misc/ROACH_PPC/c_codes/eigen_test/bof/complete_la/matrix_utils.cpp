@@ -7,13 +7,12 @@
 #endif
 #include <stdio.h>
 
-<<<<<<< HEAD
-=======
+
+
 /*
  *  Author: Sebastian Jorquera
  */
 
->>>>>>> dadcb696233e71373f0ac23593fbb9047fb1ff27
 //matrix definitions
 static float Kmu1[12*16] = {
     0.5       , 0.        , 0.        , 0.        , 0.        ,
