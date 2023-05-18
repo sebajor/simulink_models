@@ -3,17 +3,17 @@ fft_size = 12;
 
 pfb_taps = 3;
 pfb_inwidth = 16;
-pfb_outwidth = 18;
+pfb_outwidth = 24;
 
 pow_add_lat = 2;
 pow_mult_lat = 3;
 
 %the power is calculated full scale then you could reduce it
 pow_shift = 1;  %left shift
-pow_resize = 20;
-pow_point = 15;
+pow_resize = 48;
+pow_point = 47;
 
-acc_out = 32;   %only could be 8,16,32,64,128 to match the brams
+acc_out = 64;   %only could be 8,16,32,64,128 to match the brams
 
 %latencies
 pfb_add_lat = 1;

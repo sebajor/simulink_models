@@ -1,5 +1,5 @@
 model_name = 'rfsoc_complex_correlator';
-fft_size = 11;
+fft_size = 12;
 
 pfb_taps = 3;
 pfb_inwidth = 16;
@@ -206,13 +206,13 @@ for i=[0:1:7]
 end
 
 %update bram counter
-for i=[0:1:4]
+for i=[0:1:5]
     name = strcat(model_name, '/counter', int2str(i));
     set_param(name, 'n_bits', int2str(fft_size-3));
 end
 
 %acclen_ctrl
-for i=[0:1:4]
+for i=[0:1:5]
     name = strcat(model_name, '/acc_cntrl', int2str(i));
     set_param(name, 'chan_bits', int2str(fft_size-3));
 end

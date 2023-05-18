@@ -39,17 +39,18 @@ def plot_snapshot():
 
     
 def create_figure(snapshots, samples, dtype):
+    names = ['ADC D', 'ADC C', 'ADC B', 'ADC A']
     axmap = {1 : (1,1), 2 : (1,2), 4 : (2,2), 16 : (4,4)}
     fig, axes = plt.subplots(*axmap[len(snapshots)], squeeze=False)
     fig.set_tight_layout(True)
 
     lines = []
-    for snap,ax in zip(snapshots, axes.flatten()):
+    for snap,ax,name in zip(snapshots, axes.flatten(), names):
         ax.set_xlim(samples)
         ax.set_ylim(np.iinfo(dtype).min-10, np.iinfo(dtype).max+10)
         ax.set_xlabel('Samples')
         ax.set_ylabel('Amplitude')
-        ax.set_title(snap)
+        ax.set_title(name)
         ax.grid()
         line, = ax.plot([],[], animated=True)
         lines.append(line)

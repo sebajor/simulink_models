@@ -1,5 +1,5 @@
 model_name = 'rfsoc_if_calibrator';
-fft_size = 10;
+fft_size = 11;
 
 pfb_taps = 3;
 pfb_inwidth = 16;
@@ -57,8 +57,10 @@ reorder_vals = containers.Map(fft_vals, unscramble_values);
 %%
 
 %write pfb and ffts
+
+%write pfb and ffts
 disp('Update pfbs');
-for i=[0:1:1]
+for i=[0:1:3]
     pfb_name = strcat(model_name, '/pfb_fir',int2str(i));
     set_param(pfb_name, 'PFBSize', int2str(fft_size));
     set_param(pfb_name, 'TotalTaps', int2str(pfb_taps));
@@ -71,7 +73,7 @@ for i=[0:1:1]
 end
 
 disp('Update ffts');
-for i=[0:1:1]
+for i=[0:1:3]
     fft_name = strcat(model_name, '/fft', int2str(i));
     set_param(fft_name,'FFTSize', int2str(fft_size));
     set_param(fft_name,'input_bit_width', int2str(pfb_outwidth));
@@ -88,9 +90,12 @@ const_name = strcat(model_name, '/Constant6');
 set_param(const_name, 'n_bits', '32');
 set_param(const_name, 'const', int2str(2^(fft_size)-1));
 
+
+%pre,post power delay
+
 %pre,post power delay
 disp('Update pre-post power delay');
-for i=[0:1:1]
+for i=[0:1:3]
     name = strcat(model_name, '/pre_power_delay', int2str(i));
     set_param(name, 'delay', int2str(pre_power_lat));
     name = strcat(model_name, '/post_power_delay', int2str(i));
@@ -100,7 +105,20 @@ end
 %conjugation and pre_corr delay
 disp('Update conjugation and pre, post-corr delay');
 
-for i=[0:1:0]
+for i=[0:1:1]
+    name = strcat(model_name, '/pre_correlation_delay', int2str(i));
+    set_param(name, 'delay', int2str(conjugation_delay));
+    name = strcat(model_name, '/conjugation', int2str(i));
+    set_param(name, 'lat', int2str(conjugation_delay));
+    set_param(name, 'din_width', int2str(pfb_outwidth));
+    name = strcat(model_name, '/post_correlation_delay', int2str(i));
+    set_param(name, 'delay', int2str(post_power_lat));
+end
+
+%conjugation and pre_corr delay
+disp('Update conjugation and pre, post-corr delay');
+
+for i=[0:1:1]
     name = strcat(model_name, '/pre_correlation_delay', int2str(i));
     set_param(name, 'delay', int2str(conjugation_delay));
     name = strcat(model_name, '/conjugation', int2str(i));
@@ -111,10 +129,9 @@ for i=[0:1:0]
 end
 
 
-
 %power
 disp('Update powers');
-for i=[0:1:1]
+for i=[0:1:3]
     name = strcat(model_name, '/power', int2str(i));
     set_param(name,'din_width', int2str(pfb_outwidth))
     set_param(name,'add_lat', int2str(pow_add_lat))
@@ -123,7 +140,7 @@ end
 
 %correlation mult
 disp('Upate correlation mults');
-for i=[0:1:0]
+for i=[0:1:1]
     name = strcat(model_name, '/correlation_mults', int2str(i));
     set_param(name, 'din_width', int2str(pfb_outwidth));
     set_param(name, 'dout_width', int2str(2*pfb_outwidth));
@@ -136,7 +153,7 @@ end
 
 %convert power output
 disp('Convert the output power');
-for i=[0:1:1]
+for i=[0:1:3]
     pow_conv_name = strcat(model_name, '/power_convert', int2str(i));
     set_param(pow_conv_name, 'shift_val', int2str(pow_shift));
     set_param(pow_conv_name, 'conv_width', int2str(pow_resize));
@@ -145,7 +162,7 @@ end
 
 %convert correlation output
 disp('Convert the correlation output');
-for i=[0:1:0]
+for i=[0:1:1]
     name = strcat(model_name, '/correlation_conv', int2str(i));
     set_param(name, 'din_width', int2str(2*pfb_outwidth));
     set_param(name, 'din_point', int2str(2*pfb_outwidth-1));
@@ -158,7 +175,7 @@ end
 
 %accumultors
 disp('Update power accumulators');
-for i=[0:1:1]
+for i=[0:1:3]
     name = strcat(model_name, '/accs', int2str(i));
     set_param(name, 'vector_len',int2str(2^(fft_size-3)));
     set_param(name, 'dout_width',int2str(acc_out));
@@ -166,7 +183,7 @@ for i=[0:1:1]
 end
 
 disp('Update corr accumulators');
-for i=[0:1:0]
+for i=[0:1:1]
     name = strcat(model_name, '/correlation_accs', int2str(i));
     set_param(name, 'din_width', int2str(pow_resize));
     set_param(name, 'din_point', int2str(pow_point));
@@ -176,7 +193,7 @@ for i=[0:1:0]
 end
 
 %prebram delays
-for i=[0:1:4]
+for i=[0:1:9]
     name = strcat(model_name, '/pre_bram_delay', int2str(i));
     set_param(name, 'delay', int2str(pre_bram_lat));
 end
@@ -195,7 +212,7 @@ end
 
 
 disp('Update brams');
-for i=[0:1:1]
+for i=[0:1:3]
     adc = strcat(model_name, '/adc', int2str(i));
     for j=[0:1:7]
         name = strcat(adc, '_', int2str(j));
@@ -208,29 +225,41 @@ for i=[0:1:7]
     name = strcat(model_name, '/corr01_', int2str(i));
     set_param(name, 'addr_width',int2str(bram_addr));
     set_param(name, 'data_width', int2str(acc_out));
-    name = strcat(model_name, '/cal0_', int2str(i));
-    set_param(name, 'addr_width',int2str(bram_addr));
-    set_param(name, 'data_width', int2str(acc_out));
-    name = strcat(model_name, '/cal1_', int2str(i));
+    name = strcat(model_name, '/corr23_', int2str(i));
     set_param(name, 'addr_width',int2str(bram_addr));
     set_param(name, 'data_width', int2str(acc_out));
 end
 
 %update bram counter
-for i=[0:1:4]
+for i=[0:1:9]
     name = strcat(model_name, '/counter', int2str(i));
     set_param(name, 'n_bits', int2str(fft_size-3));
 end
 
 %acclen_ctrl
-for i=[0:1:4]
+for i=[0:1:9]
     name = strcat(model_name, '/acc_cntrl', int2str(i));
     set_param(name, 'chan_bits', int2str(fft_size-3));
 end
 
+
+%sync stuffs
+disp('Update sync stuffs');
+
+sync_gen_name = strcat(model_name, '/sync_gen');
+set_param(sync_gen_name, 'fft_size', int2str(2^fft_size));
+set_param(sync_gen_name, 'fft_simult_inputs', '8');
+set_param(sync_gen_name, 'pfb_fir_taps', int2str(pfb_taps));
+reorder_vec = strcat('[2,2,',int2str(reorder_vals(fft_size)),']');       %always check the reorder!!
+set_param(sync_gen_name, 'reorder_vec', reorder_vec);
+
+
+
+
+
 %calibrator
-disp('Update calibrator');
-for i=[0:1:1]
+disp('Update calibrators');
+for i=[0:1:3]
     name = strcat(model_name, '/calibrator_', int2str(i));
     set_param(name, 'din_width', int2str(pfb_outwidth));
     set_param(name, 'din_point', int2str(pfb_outwidth-1));
@@ -241,7 +270,7 @@ end
 
 %calibrator conv
 disp('Update calibrator converter');
-for i=[0:1:1]
+for i=[0:1:3]
     name = strcat(model_name, '/calibrator_conv', int2str(i));
     set_param(name, 'din_width', int2str(2*pfb_outwidth));
     set_param(name, 'din_point', int2str(2*pfb_outwidth-1));
@@ -253,13 +282,12 @@ for i=[0:1:1]
     set_param(name, 'delay', int2str(post_power_lat));
 end
 
+
 %calibrator acc
 disp('Update calibrator accumulators');
-for i=[0:1:1]
+for i=[0:1:3]
     name = strcat(model_name, '/calibrator_accs', int2str(i));
     set_param(name, 'vector_len', int2str(fft_size-1));
-    set_param(name, 'din_width', int2str(pow_resize));
-    set_param(name, 'din_point', int2str(pow_point));
     set_param(name, 'dout_width', int2str(acc_out));
     set_param(name, 'dout_point', int2str(pow_point));
 end
