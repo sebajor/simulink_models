@@ -2,7 +2,7 @@ import numpy as np
 
 test_parameters = {}
 
-fpga_ip = '192.168.1.20'
+fpga_ip = '192.168.1.23'
 fpg_file = 'rfsoc_if_calibrator.fpg'
 
 lmx_file = 'rfsoc4x2_LMX_REF_245M76_OUT_491M52.txt'
@@ -11,32 +11,33 @@ lmk_file = 'rfsoc4x2_PL_122M88_REF_245M76.txt'
 ##calibration parameters
 acc_len = 2**14
 chnl_step = 32
-sleeping = 0.5  
+sleeping = 0.01
 
 ##rf parameters
 ##correlator adc0-1
 lo_gen_name_01 = 'TCPIP::192.168.1.33::INSTR'
 rf_gen_name_01 = 'TCPIP::192.168.1.34::INSTR'
-
 lo_freq_01 = 3.1     #GHz
 lo_power01 = 0       #dBm
-rf_power_01 = -12    #dBm
+rf_power_01 =-12    #dBm
 
 #correlator adc2-3
 lo_gen_name_23 =  'TCPIP::192.168.1.33::INSTR'
 rf_gen_name_23 = 'TCPIP::192.168.1.34::INSTR'
 lo_freq_23 = 3.1    #GHz
-lo_power_23 = 0     #dBm
-rf_power_23 = -12   #dBm
+lo_power_23 = -12#0     #dBm
+rf_power_23 = 0#-12   #dBm
 
 
 ##options when characterizing the system
 load_constant = True    
 load_ideal = True
 ideal_constant = 1j
+inverted = True
 
 ##calibration folder
 debug_folder = 'debug'  ##None if you dont want to store the debug data
+
 
 
 #model parameters
@@ -159,3 +160,4 @@ test_parameters["if_test_freqs"] = if_test_freqs
 test_parameters["dBFS"] = dBFS
 test_parameters['debug_folder'] = debug_folder
 test_parameters['ideal_constant'] = ideal_constant
+test_parameters['inverted'] = inverted

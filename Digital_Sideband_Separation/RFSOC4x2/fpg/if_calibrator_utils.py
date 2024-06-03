@@ -63,7 +63,7 @@ def get_calibration_data(fpga, generator,test_parameters, sideband, dss,
     aa=np.zeros(len(test_channels))
     bb=np.zeros(len(test_channels))
     ab=np.zeros(len(test_channels), dtype=complex)
-    generator.set_power_dbm(test_parameters[dss]['rf_power'])
+    #generator.set_power_dbm(test_parameters[dss]['rf_power'])
     generator.set_freq_ghz(rf_freq[test_channels[0]])
     generator.turn_output_on()
     for i,ch  in enumerate(test_channels):
@@ -155,25 +155,37 @@ def calibration_plot_update(a2_scale, b2_scale,cross, aa, bb,ab,if_freqs,if_test
 
 
     
-def make_dss_calibration(fpga, test_parameters, dss, logger, plot=True):
+def make_dss_calibration(fpga, test_parameters, dss, logger, plot=True, inverted=False):
     """
     fpga:               CasperFpga object
     test_parameters:    parameters of the measurement
     dss:                dss01, dss23
+    inverted:           If True the LO is the one that sweeps
     """
-    lo_gen, rf_gen = setup_generators(test_parameters, dss, logger)
+    lo_gen, rf_gen = setup_generators(test_parameters, dss, logger, inverted=inverted)
     logger.info("Start tone sweeping in upper sideband")
     if(plot):
         plot = create_debug_figure(test_parameters['bandwidth'])
     else:
         plot = None
-    aa_usb, bb_usb, ab_usb = get_calibration_data(fpga, rf_gen,
-            test_parameters, 'usb', dss, plot=plot)
+
+    if(inverted):
+        aa_usb, bb_usb, ab_usb = get_calibration_data(fpga, lo_gen,
+                test_parameters, 'usb', dss, plot=plot)
+        
+        time.sleep(0.3)
+        logger.info("Start tone sweeping in lower sideband")
+        aa_lsb, bb_lsb, ab_lsb = get_calibration_data(fpga, lo_gen,
+                test_parameters, 'lsb', dss, plot=plot)
     
-    time.sleep(0.3)
-    logger.info("Start tone sweeping in lower sideband")
-    aa_lsb, bb_lsb, ab_lsb = get_calibration_data(fpga, rf_gen,
-            test_parameters, 'lsb', dss, plot=plot)
+    else:
+        aa_usb, bb_usb, ab_usb = get_calibration_data(fpga, rf_gen,
+                test_parameters, 'usb', dss, plot=plot)
+        
+        time.sleep(0.3)
+        logger.info("Start tone sweeping in lower sideband")
+        aa_lsb, bb_lsb, ab_lsb = get_calibration_data(fpga, rf_gen,
+                test_parameters, 'lsb', dss, plot=plot)
     
     rf_gen.turn_output_off()
     lo_gen.turn_output_off()
@@ -182,6 +194,11 @@ def make_dss_calibration(fpga, test_parameters, dss, logger, plot=True):
     lo_gen.instr.close()
     
     if(test_parameters['debug_folder'] is not None):
+        if(inverted):
+            np.savez(os.path.join(test_parameters['debug_folder'], 'dds_calibration_inverted.npz'),
+                     aa_lsb = aa_lsb, bb_lsb=bb_lsb, ab_lsb=ab_lsb,
+                     aa_usb = aa_usb, bb_usb=bb_usb, ab_usb=ab_usb)
+        else:
         np.savez(os.path.join(test_parameters['debug_folder'], 'dds_calibration.npz'),
                  aa_lsb = aa_lsb, bb_lsb=bb_lsb, ab_lsb=ab_lsb,
                  aa_usb = aa_usb, bb_usb=bb_usb, ab_usb=ab_usb)
@@ -192,7 +209,7 @@ def setup_generators(test_parameters,dss, logger):
     #connect to the instruments
     lo_gen = visa_generator(test_parameters[dss]['lo']['genname'])
     rf_gen = visa_generator(test_parameters[dss]['rf']['genname'])
-    
+
     lo_gen.set_freq_ghz(test_parameters[dss]['lo']['freq'])
     lo_gen.set_power_dbm(test_parameters[dss]['lo']['power'])
     lo_power = lo_gen.get_power_dbm()[0]
@@ -205,12 +222,14 @@ def setup_generators(test_parameters,dss, logger):
     rf_gen.set_power_dbm(test_parameters[dss]['rf']['power'])
     rf_power = rf_gen.get_power_dbm()[0]
     logger.debug("RF power {:.3f}".format(rf_power))
+    ##we set the rf at the lo freq in case we sweep with the lo
+    rf_gen.set_freq_ghz(test_parameters[dss]['lo']['freq'])
     return lo_gen, rf_gen
     
 
 
 
-def srr_measurement(fpga, test_parameters, constants,dss,logger, plot=None):
+def srr_measurement(fpga, test_parameters, constants,dss,logger, plot=None, inverted=False):
     """
     constants: [lsb_constants, usb_constants]
     """
@@ -233,6 +252,8 @@ def srr_measurement(fpga, test_parameters, constants,dss,logger, plot=None):
     load_constants(fpga, constants[0], test_parameters['const_nbits'], 
             test_parameters['const_binpt'], test_parameters[dss]['cal1'])
     lo_gen, rf_gen = setup_generators(test_parameters, dss, logger)
+    if(inverted):
+        lo_gen, rf_gen = rf_gen, lo_gen
     
     logger.info("Start lsb sweeping")
     test_channels = test_parameters['test_channels']
@@ -328,11 +349,10 @@ def plot_srr(lsbtone_lsb, lsbtone_usb, usbtone_lsb, usbtone_usb,  test_parameter
     fig.savefig(os.path.join(test_parameters['debug_folder'], 'srr', 'srr.pdf'))
     if(show):
         plt.show()
-    fig.close()
+    plt.close()
 
 
-
-def main_measure(dss, test_parameters, log_file=None, log_level=logging.DEBUG, cal_plot=True):
+def program_fpga(test_parameters):
     ##connect to the fpga
     fpga = casperfpga.CasperFpga(test_parameters['fpga_ip'])
     #program it
@@ -348,8 +368,22 @@ def main_measure(dss, test_parameters, log_file=None, log_level=logging.DEBUG, c
     fpga.write_int(test_parameters['cal_acc_len'], test_parameters['acc_len'])
     fpga.write_int(test_parameters['synth_acc_len'], test_parameters['acc_len'])
     fpga.write_int(test_parameters['cnt_rst'],0)
+    return fpga
 
 
+
+def main_measure(fpga, dss, test_parameters, log_file=None, log_level=logging.DEBUG, cal_plot=True,
+                 inverted=False):
+    """
+    fpga:           fpga object
+    dss:            which sideband separation we are testing (we have two sideband separation in the model: 
+                    dss01 and dss23)
+    test_paramters: Parameters of the measurement (from parameters.py)
+    log_file:       
+    log_level:
+    cal_plot:       If plot the values while measuring
+
+    """
     ##create logger object
     logging.basicConfig()
     logformat = logging.Formatter("%(asctime)s [%(levelname)-5.5s]  %(message)s")
@@ -364,10 +398,15 @@ def main_measure(dss, test_parameters, log_file=None, log_level=logging.DEBUG, c
         file_handler.setFormatter(logformat)
         logger.addHandler(file_handler)
 
-
+    ##First we are going to make the rf measurment
+    debug_name = test_parameters['debug_folder']
+    if(inverted):
+        test_parameters['debug_folder'] = debug_name+'_lo'
+    else:
+        test_parameters['debug_folder'] = debug_name+'_rf'
     [aa_lsb, bb_lsb, ab_lsb,
      aa_usb, bb_usb, ab_usb, plot] = make_dss_calibration(fpga, test_parameters,dss,
-             logger, plot=cal_plot)
+             logger, plot=cal_plot, inverted=False)
 
     ##compute calibration constants   
 
@@ -407,6 +446,16 @@ def main_measure(dss, test_parameters, log_file=None, log_level=logging.DEBUG, c
                 test_parameters, dss)
         os.rename(os.path.join(test_parameters['debug_folder'], 'srr'),
                 os.path.join(test_parameters['debug_folder'], 'srr_calibrated'))
+        
+        if(test_parameters['inverted']):
+            logger.info("Calibrated constant measured inverse")
+            [lsbtone_lsb, lsbtone_usb, usbtone_lsb, usbtone_usb] = srr_measurement(fpga, 
+                    test_parameters, constants,dss,logger, plot=plot, inverted=True)
+            plot_srr(lsbtone_lsb, lsbtone_usb, usbtone_lsb, usbtone_usb,  
+                    test_parameters, dss)
+            os.rename(os.path.join(test_parameters['debug_folder'], 'srr'),
+                    os.path.join(test_parameters['debug_folder'], 'srr_calibrated_inverted'))
+
 
     if(test_parameters['load_ideal']):
         logger.info("Ideal constants measure")
@@ -418,5 +467,20 @@ def main_measure(dss, test_parameters, log_file=None, log_level=logging.DEBUG, c
                 test_parameters, dss)
         os.rename(os.path.join(test_parameters['debug_folder'], 'srr'),
                 os.path.join(test_parameters['debug_folder'], 'srr_ideal'))
+        
+        if(test_parameters['inverted']):
+            logger.info("Ideal constant measured inverse")
+            [lsbtone_lsb, lsbtone_usb, usbtone_lsb, usbtone_usb] = srr_measurement(fpga, 
+                    test_parameters, constants,dss,logger, plot=plot, inverted=True)
+            plot_srr(lsbtone_lsb, lsbtone_usb, usbtone_lsb, usbtone_usb,  
+                    test_parameters, dss)
+            os.rename(os.path.join(test_parameters['debug_folder'], 'srr'),
+                    os.path.join(test_parameters['debug_folder'], 'srr_ideal_inverted'))
 
+
+
+if __name__ == '__main__':
+    fpga = program_fpga(test_parameters)
+    main_measure(fpga, 'dss23', test_parameters)
+    main_measure(fpga, 'dss23', test_parameters, inverted=True)
 
